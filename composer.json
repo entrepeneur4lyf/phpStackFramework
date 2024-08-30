@@ -1,0 +1,21 @@
+{
+    "name": "phpstack/framework",
+    "description": "A scalable and efficient PHP framework",
+    "type": "project",
+    "require": {
+        "php": "^8.0|^8.1|^8.2",
+        "openswoole/core": "22.1.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "phpStack\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
