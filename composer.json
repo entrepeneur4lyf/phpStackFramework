@@ -6,6 +6,9 @@
         "php": "^8.0|^8.1|^8.2",
         "openswoole/core": "22.1.5"
     },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10"
+    },
     "autoload": {
         "psr-4": {
             "phpStack\\": "src/"
@@ -17,5 +20,8 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts": {
+        "phpstan": "phpstan analyse src tests"
+    }
 }
