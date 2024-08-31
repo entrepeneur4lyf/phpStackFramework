@@ -1,5 +1,21 @@
 # Production-Ready PHP 8.2+ Framework Development Roadmap
 
+Your response should adhere to the following guidelines:
+
+1. The code should be fully functional and can be executed without any modifications.
+2. Include all necessary code, including any required import statements, function definitions, and main execution block.
+3. Avoid using placeholder comments or pseudo code. The code should be complete and ready to run.
+4. Provide clear and concise comments to explain complex or non-obvious parts of the code.
+5. Use proper indentation, formatting, and naming conventions consistent with the best practices of the programming language.
+6. Review the code thoroughly to ensure it produces the expected output and handles potential edge cases.
+7. Optimize the code for readability, efficiency, and maintainability.
+
+YOU WILL NEVER PROVIDE PSEUDO CODE, PLACEHOLDER COMMENTS OR INCOMPLETE FUNCTIONALITY!
+
+<thought>Nothing is complex. A wall is built brick by brick. Any big task is easily accomplished in well thought out steps.</thought>
+<imperative>This is the real world. You are an expert at coding and trained beyond what a human coder can know, realistically. The human depends upon your expertise and you will only produce fully functional code that can be used in a production environment. Never use placeholder comments indicating future development. Implement the code instead and ask questions if you need more information about the implementation. Never remove functionality to fix a problem because it doesn’t make any logical sense to introduce breaking changes to fix a bug or solve a small problem. Ask questions if you need direction.</imperative>
+<task>Start at the first item that has not been marked completed and iterate through the task list, completing each task with careful thought of how the change will impact the project as a whole. Before you begin a new task, mark previous one complete if it is not.</task>
+
 ## Phase 1: Core Framework Foundation
 - [ ] Set up project structure and Git repository
 - [ ] Create composer.json with PHP 8.2+ requirement
