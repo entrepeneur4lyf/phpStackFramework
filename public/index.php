@@ -37,13 +37,7 @@ if (php_sapi_name() === 'cli-server') {
     echo $content;
 } else {
     // Running with OpenSwoole
-    use OpenSwoole\HTTP\Server;
-    use OpenSwoole\HTTP\Request;
-    use OpenSwoole\HTTP\Response;
-    use OpenSwoole\WebSocket\Server as WebSocketServer;
-    use OpenSwoole\WebSocket\Frame;
-
-    $server = new WebSocketServer("0.0.0.0", 8080);
+    $server = new \OpenSwoole\WebSocket\Server("0.0.0.0", 8080);
 
     $server->on("start", function (Server $server) {
         echo "Swoole server is started at http://127.0.0.1:8080\n";
