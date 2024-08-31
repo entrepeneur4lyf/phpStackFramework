@@ -54,7 +54,9 @@ class TemplatingServiceProvider extends ServiceProvider
         $layoutManager = $this->container->get(LayoutManager::class);
 
         // Register default components
-        $componentRegistry->register('main-layout', \phpStack\Components\MainLayout::class);
+        $componentRegistry->register('main-layout', function ($container) use ($componentRegistry) {
+            return new \phpStack\Components\MainLayout($componentRegistry);
+        });
         $componentRegistry->register('header', \phpStack\Components\Header::class);
         $componentRegistry->register('footer', \phpStack\Components\Footer::class);
         $componentRegistry->register('sidebar', \phpStack\Components\Sidebar::class);

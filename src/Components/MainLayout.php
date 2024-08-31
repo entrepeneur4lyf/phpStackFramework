@@ -6,6 +6,13 @@ use phpStack\Templating\ComponentService;
 
 class MainLayout extends ComponentService
 {
+    protected $componentRegistry;
+
+    public function __construct($componentRegistry)
+    {
+        $this->componentRegistry = $componentRegistry;
+    }
+
     public function render(): string
     {
         return <<<HTML
@@ -19,14 +26,14 @@ class MainLayout extends ComponentService
             <link rel="icon" href="/favicon.ico" type="image/x-icon">
         </head>
         <body>
-            <div data-component="header"></div>
+            {$this->componentRegistry->render('header')}
             <div class="container">
-                <div data-component="sidebar"></div>
+                {$this->componentRegistry->render('sidebar')}
                 <main>
                     {$this->getData('content')}
                 </main>
             </div>
-            <div data-component="footer"></div>
+            {$this->componentRegistry->render('footer')}
             <script src="/js/websocket-handler.js"></script>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
