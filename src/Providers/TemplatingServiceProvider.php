@@ -3,6 +3,7 @@
 namespace phpStack\Providers;
 
 use phpStack\Core\ServiceProvider;
+use phpStack\Core\Container;
 use phpStack\Templating\ComponentRegistry;
 use phpStack\Templating\LayoutManager;
 use phpStack\Templating\RenderEngine;

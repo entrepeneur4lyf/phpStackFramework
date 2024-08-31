@@ -2,7 +2,7 @@
 
 namespace phpStack\Core;
 
-use phpStack\Container\Container;
+use phpStack\Core\Container;
 use phpStack\Providers\DatabaseServiceProvider;
 use phpStack\Providers\TemplatingServiceProvider;
 

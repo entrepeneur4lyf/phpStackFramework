@@ -2,7 +2,7 @@
 
 namespace phpStack\Console;
 
-use phpStack\Container\Container;
+use phpStack\Core\Container;
 use phpStack\Database\Migration\MigrationManager;
 
 class Console

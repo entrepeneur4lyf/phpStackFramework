@@ -5,7 +5,7 @@ namespace phpStack\Providers;
 use phpStack\Container\Container;
 use phpStack\Database\Connection;
 use phpStack\Database\Migration\MigrationManager;
-use phpStack\ServiceProvider;
+use phpStack\Core\ServiceProvider;
 
 class DatabaseServiceProvider extends ServiceProvider
 {

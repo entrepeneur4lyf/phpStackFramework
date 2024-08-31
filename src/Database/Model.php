@@ -2,7 +2,8 @@
 
 namespace phpStack\Database;
 
-use phpStack\Container\Container;
+use phpStack\Core\Container;
+use phpStack\Database\QueryBuilder;
 
 abstract class Model
 {

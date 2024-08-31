@@ -2,8 +2,8 @@
 
 namespace phpStack\Templating;
 
-use phpStack\Container\Container;
-use phpStack\Cache\CacheManager;
+use phpStack\Core\Container;
+use phpStack\Core\Cache\CacheManager;
 
 class RenderEngine
 {

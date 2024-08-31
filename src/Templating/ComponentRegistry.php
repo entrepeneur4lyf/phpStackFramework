@@ -2,7 +2,7 @@
 
 namespace phpStack\Templating;
 
-use phpStack\Container\Container;
+use phpStack\Core\Container;
 use phpStack\Components\MainLayout;
 use phpStack\Components\Header;
 use phpStack\Components\Footer;

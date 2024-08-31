@@ -3,6 +3,7 @@
 namespace phpStack\Database\Migration;
 
 use phpStack\Database\Connection;
+use phpStack\Core\Container;
 
 abstract class Migration
 {
