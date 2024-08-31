@@ -127,14 +127,70 @@ if (php_sapi_name() === 'cli-server') {
         echo "New WebSocket connection: {$request->fd}\n";
     });
 
+    $server->on('request', function (Request $request, Response $response) use ($app, $corsHeaders) {
+        // Add CORS headers
+        foreach ($corsHeaders as $key => $value) {
+            $response->header($key, $value);
+        }
+
+        // Handle preflight requests
+        if ($request->server['request_method'] === 'OPTIONS') {
+            $response->end();
+            return;
+        }
+
+        $renderEngine = $app->container->get(RenderEngine::class);
+
+        $uri = $request->server['request_uri'];
+        if (preg_match('/\.(?:png|jpg|jpeg|gif|css|js|ico)$/', $uri)) {
+            $filePath = __DIR__ . $uri;
+            if (file_exists($filePath)) {
+                $response->sendfile($filePath);
+            } else {
+                $response->status(404);
+                $response->end("File not found: " . $uri);
+            }
+        } else {
+            switch ($uri) {
+                case '/':
+                case '/home':
+                    $content = $renderEngine->renderLayout('main-layout', [
+                        'title' => 'Home',
+                        'content' => $renderEngine->resolve('home-page')
+                    ]);
+                    break;
+                case '/about':
+                    $content = $renderEngine->renderLayout('main-layout', [
+                        'title' => 'About',
+                        'content' => $renderEngine->resolve('about-page')
+                    ]);
+                    break;
+                case '/welcome':
+                    $dynamicContent = $app->container->get(DynamicContent::class);
+                    $content = $dynamicContent->welcome();
+                    break;
+                case '/team':
+                    $dynamicContent = $app->container->get(DynamicContent::class);
+                    $content = $dynamicContent->team();
+                    break;
+                default:
+                    $response->status(404);
+                    $content = "404 Not Found: " . $uri;
+                    break;
+            }
+
+            if (empty($content)) {
+                $content = "Error: No content generated for URI: " . $uri;
+            }
+
+            $response->header("Content-Type", "text/html; charset=utf-8");
+            $response->end($content);
+        }
+    });
+
     $server->on('message', function (WebSocketServer $server, Frame $frame) use ($app) {
-        $updateDispatcher = $app->container->get(UpdateDispatcher::class);
-        $webSocketManager = new WebSocketManager($updateDispatcher);
-    
-        echo "Received message from connection {$frame->fd}: " . substr($frame->data, 0, 50) . "...\n";
-    
-        // Handle WebSocket messages
-        $webSocketManager->onMessage($frame->fd, $frame->data);
+        echo "Received WebSocket message from connection {$frame->fd}: " . substr($frame->data, 0, 50) . "...\n";
+        // Handle WebSocket messages if needed
     });
 
     $server->on('close', function (WebSocketServer $server, $fd) {

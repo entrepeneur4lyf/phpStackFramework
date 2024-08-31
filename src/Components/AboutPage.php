@@ -12,7 +12,7 @@ class AboutPage extends ComponentService
         <div data-component="about-page">
             <h1>About Us</h1>
             <p>We are a company dedicated to creating amazing web experiences.</p>
-            <button onclick="wsHandler.requestUpdate('dynamic-content', {type: 'team'})">
+            <button hx-post="/team" hx-target="#dynamic-content" hx-swap="innerHTML">
                 Load Team Info
             </button>
         </div>

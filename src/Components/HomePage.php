@@ -12,7 +12,7 @@ class HomePage extends ComponentService
         <div data-component="home-page">
             <h1>Welcome to Our Website</h1>
             <p>This is a sample home page using our new templating system.</p>
-            <button onclick="wsHandler.requestUpdate('dynamic-content', {type: 'welcome'})">
+            <button hx-post="/welcome" hx-target="#dynamic-content" hx-swap="innerHTML">
                 Load Welcome Message
             </button>
             <div id="dynamic-content"></div>

@@ -45,10 +45,10 @@ class MainLayout extends ComponentService
             </div>
             {$this->componentRegistry->render('footer')}
             <div id="dynamic-content"></div>
-            <script src="/js/websocket-handler.js"></script>
+            <script src="https://unpkg.com/htmx.org@1.9.10"></script>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    window.wsHandler = new WebSocketHandler('ws://localhost:8080');
+                    htmx.createWebSocket('ws://localhost:8080');
                 });
             </script>
         </body>

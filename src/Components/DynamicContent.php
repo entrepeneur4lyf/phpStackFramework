@@ -33,9 +33,18 @@ class DynamicContent extends ComponentService
         }
     }
 
-    public function update(array $data): string
+    public function update(string $type): string
     {
-        $type = $data['type'] ?? 'default';
         return $this->getContentByType($type);
+    }
+
+    public function welcome(): string
+    {
+        return $this->getContentByType('welcome');
+    }
+
+    public function team(): string
+    {
+        return $this->getContentByType('team');
     }
 }
