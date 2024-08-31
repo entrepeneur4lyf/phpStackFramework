@@ -91,7 +91,7 @@ if (php_sapi_name() === 'cli-server') {
                 $response->sendfile($filePath);
             } else {
                 $response->status(404);
-                $response->end();
+                $response->end("File not found: " . $uri);
             }
         } else {
             switch ($uri) {
@@ -110,10 +110,15 @@ if (php_sapi_name() === 'cli-server') {
                     break;
                 default:
                     $response->status(404);
-                    $content = "404 Not Found";
+                    $content = "404 Not Found: " . $uri;
                     break;
             }
 
+            if (empty($content)) {
+                $content = "Error: No content generated for URI: " . $uri;
+            }
+
+            $response->header("Content-Type", "text/html; charset=utf-8");
             $response->end($content);
         }
     });
