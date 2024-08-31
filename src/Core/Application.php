@@ -50,14 +50,14 @@ class Application
             // ... other service providers ...
         ];
 
-        foreach ($providers as $provider) {
-            $instance = new $provider($this->container);
-            $instance->register();
-            $this->container->bind($provider, $instance);
+        foreach ($providers as $providerClass) {
+            $provider = new $providerClass($this->container);
+            $provider->register();
+            $this->container->bind($providerClass, $provider);
         }
 
-        foreach ($providers as $provider) {
-            $this->container->get($provider)->boot();
+        foreach ($providers as $providerClass) {
+            $this->container->get($providerClass)->boot();
         }
     }
 
