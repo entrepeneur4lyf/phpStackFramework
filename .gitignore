@@ -1,5 +1,4 @@
 /vendor/
-/design/
 /node_modules/
 /public/storage
 /storage/*.key
@@ -15,3 +14,4 @@ yarn-error.log
 PROJECT_CONTEXT
 devmap.md
 SUMMARY.md
+.aider*
