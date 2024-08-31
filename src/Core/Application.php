@@ -51,14 +51,13 @@ class Application
         ];
 
         foreach ($providers as $provider) {
-            $instance = new $provider();
-            $instance->setContainer($this->container);
+            $instance = new $provider($this->container);
             $instance->register();
+            $this->container->bind($provider, $instance);
         }
 
         foreach ($providers as $provider) {
-            $instance = $this->container->get($provider);
-            $instance->boot();
+            $this->container->get($provider)->boot();
         }
     }
 

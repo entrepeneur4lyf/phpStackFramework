@@ -6,7 +6,7 @@ abstract class ServiceProvider
 {
     protected Container $container;
 
-    public function setContainer(Container $container): void
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }
@@ -17,4 +17,3 @@ abstract class ServiceProvider
     {
     }
 }
-use phpStack\Utils\Hello;
