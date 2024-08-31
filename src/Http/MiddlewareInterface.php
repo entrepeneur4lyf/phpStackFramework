@@ -2,7 +2,9 @@
 
 namespace phpStack\Http;
 
-    public function process(Request $request, callable $next): Response
+interface MiddlewareInterface extends PsrMiddlewareInterface
+{
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
 }
 
 use Psr\Http\Message\ResponseInterface;

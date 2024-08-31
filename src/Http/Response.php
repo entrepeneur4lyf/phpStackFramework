@@ -2,9 +2,10 @@
 
 namespace phpStack\Http;
 
-class Response
-{
-class Response
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
+
+class Response implements ResponseInterface
 {
     public int $statusCode;
     public array $headers = [];
@@ -18,10 +19,6 @@ class Response
     {
         // Implementation
     }
-}
-
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
     // Implement ResponseInterface methods
 
