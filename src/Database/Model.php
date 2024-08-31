@@ -74,7 +74,7 @@ abstract class Model
         $result = $query->table($model->table)
                         ->where($model->primaryKey, $id)
                         ->first();
-        return $result ? new static($result) : null;
+        return $result ? $model->newInstance($result) : null;
     }
 
     public static function all()
@@ -82,9 +82,16 @@ abstract class Model
         $query = self::getQueryBuilder();
         $model = new static();
         $results = $query->table($model->table)->get();
-        return array_map(function ($result) {
-            return new static($result);
+        return array_map(function ($result) use ($model) {
+            return $model->newInstance($result);
         }, $results);
+    }
+
+    protected function newInstance(array $attributes = [])
+    {
+        $instance = new static();
+        $instance->fill($attributes);
+        return $instance;
     }
 
     public function delete()
@@ -152,7 +159,7 @@ abstract class Model
     protected static function getQueryBuilder()
     {
         if (!self::$queryBuilder) {
-            $config = Container::getInstance()->get('config');
+            $config = \phpStack\Core\Container::getInstance()->get('config');
             self::$queryBuilder = new QueryBuilder(new Connection(
                 $config['database']['host'],
                 $config['database']['database'],
