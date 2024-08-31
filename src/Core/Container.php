@@ -183,9 +183,9 @@ class Container
 }
 
 use Psr\Container\ContainerInterface;
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 
-class Container implements ContainerInterface
+class Container implements PsrContainerInterface
 {
     protected array $bindings = [];
     protected array $instances = [];
