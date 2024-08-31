@@ -18,16 +18,4 @@ class HomePage extends ComponentService
         </div>
         HTML;
     }
-}<?php
-
-namespace phpStack\Components;
-
-use phpStack\Templating\ComponentService;
-
-class HomePage extends ComponentService
-{
-    public function render(): string
-    {
-        return '<h2>Welcome to phpStack Framework</h2><p>This is the home page.</p>';
-    }
 }
