@@ -14,5 +14,5 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 interface MiddlewareInterface extends PsrMiddlewareInterface
 {
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
 }
