@@ -94,7 +94,7 @@ abstract class Model
 
     protected static function newInstanceWithAttributes(array $attributes = [])
     {
-        $instance = static::newInstance();
+        $instance = new static();
         $instance->fill($attributes);
         return $instance;
     }
