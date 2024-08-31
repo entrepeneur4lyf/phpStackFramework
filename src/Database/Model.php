@@ -4,6 +4,9 @@ namespace phpStack\Database;
 
 use phpStack\Database\QueryBuilder;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 abstract class Model
 {
     protected $table;
