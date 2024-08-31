@@ -2,8 +2,6 @@
 
 namespace phpStack\Http;
 
-class MiddlewarePipeline
-{
     protected $middlewares = [];
 
     public function pipe(MiddlewareInterface $middleware): self

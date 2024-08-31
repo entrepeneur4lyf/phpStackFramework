@@ -7,8 +7,6 @@ use ReflectionClass;
 use ReflectionParameter;
 use Exception;
 
-class Container
-{
     /** @var array<string, array{concrete: callable, shared: bool}> */
     protected $bindings = [];
 

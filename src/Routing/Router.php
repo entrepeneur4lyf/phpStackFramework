@@ -5,8 +5,6 @@ namespace phpStack\Routing;
 use phpStack\Http\Request;
 use phpStack\Http\Response;
 
-class Router
-{
     protected $routes = [];
 
     public function addRoute(string $method, string $path, $handler): void

@@ -56,8 +56,6 @@ class Response
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
-class Response implements ResponseInterface
-{
     // Implement ResponseInterface methods
 
     public function send(): void

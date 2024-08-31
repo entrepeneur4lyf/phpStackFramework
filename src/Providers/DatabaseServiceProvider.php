@@ -2,10 +2,10 @@
 
 namespace PhpStack\Providers;
 
-use PhpStack\Core\ServiceProvider;
-use PhpStack\Database\Connection;
-use PhpStack\Database\QueryBuilder;
-use PhpStack\Database\Migration\MigrationManager;
+use phpStack\Core\ServiceProvider;
+use phpStack\Database\Connection;
+use phpStack\Database\QueryBuilder;
+use phpStack\Database\Migration\MigrationManager;
 
 class DatabaseServiceProvider extends ServiceProvider
 {

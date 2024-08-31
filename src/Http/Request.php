@@ -65,8 +65,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-class Request implements ServerRequestInterface
-{
     // Implement ServerRequestInterface methods
 
     public static function createFromGlobals(): self

@@ -6,8 +6,6 @@ use phpStack\Core\Container;
 use phpStack\Providers\DatabaseServiceProvider;
 use phpStack\Providers\TemplatingServiceProvider;
 
-class Application
-{
     public Container $container;
     private static ?self $instance = null;
 

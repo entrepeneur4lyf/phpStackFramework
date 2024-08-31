@@ -2,8 +2,6 @@
 
 namespace phpStack\Routing;
 
-class Route
-{
     protected $method;
     protected $path;
     protected $handler;
