@@ -15,6 +15,15 @@ class MainLayout extends ComponentService
 
     public function render(): string
     {
+        $content = $this->getData('content');
+        if (is_string($content)) {
+            $mainContent = $content;
+        } elseif ($content instanceof ComponentService) {
+            $mainContent = $content->render();
+        } else {
+            $mainContent = '';
+        }
+
         return <<<HTML
         <!DOCTYPE html>
         <html lang="en">
@@ -30,7 +39,7 @@ class MainLayout extends ComponentService
             <div class="container">
                 {$this->componentRegistry->render('sidebar')}
                 <main>
-                    {$this->getData('content')}
+                    {$mainContent}
                 </main>
             </div>
             {$this->componentRegistry->render('footer')}
