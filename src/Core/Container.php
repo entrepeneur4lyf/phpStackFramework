@@ -9,10 +9,13 @@ use Exception;
 
 class Container
 {
+    /** @var array<string, array{concrete: callable, shared: bool}> */
     protected $bindings = [];
+
+    /** @var array<string, mixed> */
     protected $instances = [];
 
-    public function bind($abstract, $concrete = null, $shared = false)
+    public function bind(string $abstract, $concrete = null, bool $shared = false): void
     {
         if (is_null($concrete)) {
             $concrete = $abstract;
@@ -75,11 +78,16 @@ class Container
         return $this->bindings[$abstract]['concrete'];
     }
 
-    protected function isBuildable($concrete, $abstract)
+    protected function isBuildable($concrete, string $abstract): bool
     {
         return $concrete === $abstract || $concrete instanceof Closure;
     }
 
+    /**
+     * @param callable|string $concrete
+     * @param array<string, mixed> $parameters
+     * @return mixed
+     */
     protected function build($concrete, array $parameters = [])
     {
         if ($concrete instanceof Closure) {
@@ -104,7 +112,11 @@ class Container
         return $reflector->newInstanceArgs($instances);
     }
 
-    protected function resolveDependencies(array $dependencies)
+    /**
+     * @param ReflectionParameter[] $dependencies
+     * @return array<mixed>
+     */
+    protected function resolveDependencies(array $dependencies): array
     {
         $results = [];
 
@@ -117,6 +129,10 @@ class Container
         return $results;
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     protected function resolvePrimitive(ReflectionParameter $parameter)
     {
         if ($parameter->isDefaultValueAvailable()) {
@@ -126,10 +142,14 @@ class Container
         throw new Exception("Unresolvable dependency resolving [$parameter]");
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     protected function resolveClass(ReflectionParameter $parameter)
     {
         try {
-            return $this->make($parameter->getClass()->name);
+            return $this->make($parameter->getClass()->getName());
         } catch (Exception $e) {
             if ($parameter->isOptional()) {
                 return $parameter->getDefaultValue();
@@ -139,7 +159,12 @@ class Container
         }
     }
 
-    protected function getClosure($abstract, $concrete)
+    /**
+     * @param string $abstract
+     * @param callable|string $concrete
+     * @return Closure
+     */
+    protected function getClosure($abstract, $concrete): Closure
     {
         return function ($container, $parameters = []) use ($abstract, $concrete) {
             if ($abstract == $concrete) {
@@ -150,7 +175,7 @@ class Container
         };
     }
 
-    protected function isShared($abstract)
+    protected function isShared(string $abstract): bool
     {
         return isset($this->bindings[$abstract]['shared']) &&
                $this->bindings[$abstract]['shared'] === true;
