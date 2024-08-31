@@ -34,17 +34,15 @@ class MainLayout extends ComponentService
             <link rel="stylesheet" href="/css/main.css">
             <link rel="icon" href="/favicon.ico" type="image/x-icon">
         </head>
-        <body>
+        <body hx-boost="true">
             {$this->componentRegistry->render('header')}
             <div class="container">
                 {$this->componentRegistry->render('sidebar')}
-                <main>
+                <main id="main-content" hx-trigger="load" hx-get="/home" hx-swap="innerHTML">
                     {$mainContent}
-                    <div id="dynamic-content"></div>
                 </main>
             </div>
             {$this->componentRegistry->render('footer')}
-            <div id="dynamic-content"></div>
             <script src="https://unpkg.com/htmx.org@1.9.10"></script>
             <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
             <script>
@@ -53,6 +51,11 @@ class MainLayout extends ComponentService
                 });
                 document.body.addEventListener('htmx:wsError', function(event) {
                     console.error('WebSocket Error:', event.detail.error);
+                });
+                document.body.addEventListener('htmx:afterSettle', function(event) {
+                    if (event.detail.target.id === 'main-content') {
+                        history.pushState({}, '', event.detail.pathInfo.requestPath);
+                    }
                 });
             </script>
         </body>

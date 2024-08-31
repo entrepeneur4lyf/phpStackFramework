@@ -154,16 +154,24 @@ if (php_sapi_name() === 'cli-server') {
             switch ($uri) {
                 case '/':
                 case '/home':
-                    $content = $renderEngine->renderLayout('main-layout', [
-                        'title' => 'Home',
-                        'content' => $renderEngine->resolve('home-page')
-                    ]);
+                    if ($request->header('HX-Request')) {
+                        $content = $renderEngine->render('home-page');
+                    } else {
+                        $content = $renderEngine->renderLayout('main-layout', [
+                            'title' => 'Home',
+                            'content' => $renderEngine->resolve('home-page')
+                        ]);
+                    }
                     break;
                 case '/about':
-                    $content = $renderEngine->renderLayout('main-layout', [
-                        'title' => 'About',
-                        'content' => $renderEngine->resolve('about-page')
-                    ]);
+                    if ($request->header('HX-Request')) {
+                        $content = $renderEngine->render('about-page');
+                    } else {
+                        $content = $renderEngine->renderLayout('main-layout', [
+                            'title' => 'About',
+                            'content' => $renderEngine->resolve('about-page')
+                        ]);
+                    }
                     break;
                 case '/welcome':
                     $dynamicContent = $app->container->get(DynamicContent::class);

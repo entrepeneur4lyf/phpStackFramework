@@ -12,10 +12,10 @@ class HomePage extends ComponentService
         <div data-component="home-page" hx-ext="ws">
             <h1>Welcome to Our Website</h1>
             <p>This is a sample home page using our new templating system.</p>
-            <button hx-post="/welcome" hx-target="#dynamic-content" hx-swap="innerHTML">
+            <button hx-post="/welcome" hx-target="#main-content" hx-swap="innerHTML">
                 Load Welcome Message
             </button>
-            <div id="dynamic-content"></div>
+            <a href="/about" hx-boost="true" hx-target="#main-content" hx-swap="innerHTML">About Us</a>
         </div>
         HTML;
     }
