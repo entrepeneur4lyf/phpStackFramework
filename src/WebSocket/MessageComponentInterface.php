@@ -2,12 +2,12 @@
 
 namespace phpStack\WebSocket;
 
-use React\Socket\ConnectionInterface;
+use Swoole\WebSocket\Server;
+use Swoole\Http\Request;
 
 interface MessageComponentInterface
 {
-    public function onOpen(ConnectionInterface $conn): void;
-    public function onMessage(ConnectionInterface $from, string $msg): void;
-    public function onClose(ConnectionInterface $conn): void;
-    public function onError(ConnectionInterface $conn, \Exception $e): void;
+    public function onOpen(Server $server, Request $request): void;
+    public function onMessage(Server $server, \Swoole\WebSocket\Frame $frame): void;
+    public function onClose(Server $server, int $fd): void;
 }

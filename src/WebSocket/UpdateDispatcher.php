@@ -2,7 +2,7 @@
 
 namespace phpStack\WebSocket;
 
-use React\Socket\ConnectionInterface;
+use Swoole\WebSocket\Server;
 use phpStack\Core\Container;
 use phpStack\Templating\RenderEngine;
 use phpStack\Templating\DiffEngine;
@@ -18,7 +18,7 @@ class UpdateDispatcher
         $this->diffEngine = $diffEngine;
     }
 
-    public function dispatch(ConnectionInterface $from, array $data)
+    public function dispatch(Server $server, int $fd, array $data)
     {
         if (!isset($data['action']) || !isset($data['component'])) {
             return;
@@ -26,18 +26,18 @@ class UpdateDispatcher
 
         switch ($data['action']) {
             case 'update':
-                $this->handleUpdate($from, $data['component'], $data['data'] ?? [], $data['oldContent'] ?? '');
+                $this->handleUpdate($server, $fd, $data['component'], $data['data'] ?? [], $data['oldContent'] ?? '');
                 break;
             // Add more cases for different actions as needed
         }
     }
 
-    protected function handleUpdate(ConnectionInterface $from, string $componentName, array $componentData, string $oldContent)
+    protected function handleUpdate(Server $server, int $fd, string $componentName, array $componentData, string $oldContent)
     {
         $updatedContent = $this->renderEngine->partialUpdate($componentName, $componentData);
         $diff = $this->diffEngine->calculateDiff($oldContent, $updatedContent);
         
-        $from->send(json_encode([
+        $server->push($fd, json_encode([
             'action' => 'update',
             'component' => $componentName,
             'diff' => $diff
