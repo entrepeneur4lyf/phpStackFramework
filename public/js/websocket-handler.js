@@ -78,5 +78,5 @@ class WebSocketHandler {
 }
 
 // Usage:
-// const wsHandler = new WebSocketHandler('ws://localhost:8080');
+const wsHandler = new WebSocketHandler('ws://localhost:8080');
 // wsHandler.requestUpdate('user-profile', { userId: 123 });

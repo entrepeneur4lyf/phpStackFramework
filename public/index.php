@@ -14,10 +14,28 @@ use OpenSwoole\WebSocket\Server as WebSocketServer;
 
 $app = Application::getInstance();
 
+// CORS headers
+$corsHeaders = [
+    'Access-Control-Allow-Origin' => '*',
+    'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers' => 'Origin, Content-Type, Accept, Authorization, X-Request-With',
+    'Access-Control-Allow-Credentials' => 'true'
+];
+
 if (php_sapi_name() === 'cli-server') {
     // Running with PHP's built-in server
     $uri = $_SERVER['REQUEST_URI'];
     $renderEngine = $app->container->get(RenderEngine::class);
+
+    // Add CORS headers
+    foreach ($corsHeaders as $key => $value) {
+        header("$key: $value");
+    }
+
+    // Handle preflight requests
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        exit(0);
+    }
 
     if (preg_match('/\.(?:png|jpg|jpeg|gif|css|js|ico)$/', $uri)) {
         return false;    // serve the requested resource as-is.
@@ -52,7 +70,18 @@ if (php_sapi_name() === 'cli-server') {
         echo "Swoole server is started at http://127.0.0.1:8080\n";
     });
 
-    $server->on("request", function (Request $request, Response $response) use ($app) {
+    $server->on("request", function (Request $request, Response $response) use ($app, $corsHeaders) {
+        // Add CORS headers
+        foreach ($corsHeaders as $key => $value) {
+            $response->header($key, $value);
+        }
+
+        // Handle preflight requests
+        if ($request->server['request_method'] === 'OPTIONS') {
+            $response->end();
+            return;
+        }
+
         $renderEngine = $app->container->get(RenderEngine::class);
 
         $uri = $request->server['request_uri'];
