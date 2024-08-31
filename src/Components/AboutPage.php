@@ -9,7 +9,7 @@ class AboutPage extends ComponentService
     public function render(): string
     {
         return <<<HTML
-        <div data-component="about-page">
+        <div data-component="about-page" hx-ext="ws">
             <h1>About Us</h1>
             <p>We are a company dedicated to creating amazing web experiences.</p>
             <button hx-post="/team" hx-target="#dynamic-content" hx-swap="innerHTML">

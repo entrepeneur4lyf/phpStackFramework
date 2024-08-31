@@ -46,8 +46,9 @@ class MainLayout extends ComponentService
             {$this->componentRegistry->render('footer')}
             <div id="dynamic-content"></div>
             <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.0/dist/htmx.min.js"></script>
             <script>
-                document.addEventListener('DOMContentLoaded', function() {
+                htmx.on("htmx:load", function() {
                     htmx.createWebSocket('ws://localhost:8080');
                 });
             </script>
