@@ -97,16 +97,25 @@ class Application
 
     protected function setupErrorHandling(): void
     {
-        // Implement error handling setup
+        set_exception_handler(function (\Throwable $e) {
+            // Log the error
+            error_log($e->getMessage());
+            // You can add more sophisticated error handling here
+        });
     }
 
     public function handle(Request $request): Response
     {
-        $this->bootstrap();
+        try {
+            $this->bootstrap();
 
-        return $this->middlewarePipeline->process($request, function ($request) {
-            return $this->router->dispatch($request);
-        });
+            return $this->middlewarePipeline->process($request, function ($request) {
+                return $this->router->dispatch($request);
+            });
+        } catch (\Throwable $e) {
+            // Handle any uncaught exceptions
+            return new Response('An error occurred', 500);
+        }
     }
 
     public function terminate(Request $request, Response $response): void

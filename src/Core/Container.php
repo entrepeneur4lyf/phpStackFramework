@@ -183,7 +183,7 @@ class Container
 }
 
 use Psr\Container\ContainerInterface;
-use Exception;
+use Psr\Container\ContainerInterface;
 
 class Container implements ContainerInterface
 {
@@ -201,7 +201,7 @@ class Container implements ContainerInterface
             return $this->instances[$id] = $this->resolve($concrete);
         }
 
-        throw new Exception("No binding found for $id");
+        throw new \Exception("No binding found for $id");
     }
 
     public function has(string $id): bool
