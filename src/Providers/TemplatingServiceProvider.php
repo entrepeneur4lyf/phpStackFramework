@@ -51,6 +51,7 @@ class TemplatingServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $componentRegistry = $this->container->get(ComponentRegistry::class);
+        $layoutManager = $this->container->get(LayoutManager::class);
 
         // Register default components
         $componentRegistry->register('main-layout', \phpStack\Components\MainLayout::class);
@@ -62,5 +63,8 @@ class TemplatingServiceProvider extends ServiceProvider
         $componentRegistry->register('home-page', \phpStack\Components\HomePage::class);
         $componentRegistry->register('about-page', \phpStack\Components\AboutPage::class);
         $componentRegistry->register('dynamic-content', \phpStack\Components\DynamicContent::class);
+
+        // Register layouts
+        $layoutManager->registerLayout('main-layout', 'main-layout');
     }
 }
