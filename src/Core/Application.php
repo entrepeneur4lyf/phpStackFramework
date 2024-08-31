@@ -82,7 +82,8 @@ class Application
     protected function loadConfiguration(): void
     {
         $configPath = $this->container->get('config_path');
-        $this->config->load($configPath);
+        $this->config->load($configPath . '/app.php');
+        $this->config->load($configPath . '/database.php');
     }
 
     protected function registerServiceProviders(): void
