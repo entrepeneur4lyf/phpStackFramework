@@ -92,7 +92,7 @@ class Application
             });
         } catch (\Throwable $e) {
             // Handle any uncaught exceptions
-            return (new Response())->withStatus(500)->withBody(stream_for('An error occurred'));
+            return (new Response())->withStatus(500)->withBody(\GuzzleHttp\Psr7\Utils::streamFor('An error occurred'));
         }
     }
 

@@ -9,6 +9,9 @@ class Response implements ResponseInterface
 {
     public int $statusCode;
     public array $headers = [];
+    protected string $protocolVersion = '1.1';
+    protected StreamInterface $body;
+    protected string $reasonPhrase = '';
 
     public function sendHeaders(): void
     {

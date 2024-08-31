@@ -6,13 +6,18 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-class Request implements ServerRequestInterface, RequestInterface
+class Request implements ServerRequestInterface
 {
     public string $method;
     public UriInterface $uri;
     public string $protocol;
     public array $attributes = [];
     public $body = null;
+    protected array $headers = [];
+    protected array $serverParams = [];
+    protected array $cookieParams = [];
+    protected array $queryParams = [];
+    protected array $uploadedFiles = [];
 
     public function getMethod(): string
     {
