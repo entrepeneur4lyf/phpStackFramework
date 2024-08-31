@@ -8,8 +8,8 @@ use phpStack\Providers\TemplatingServiceProvider;
 
 class Application
 {
-    public $container;
-    private static $instance;
+    public Container $container;
+    private static ?self $instance = null;
 
     public function __construct()
     {
@@ -25,7 +25,7 @@ class Application
         return self::$instance;
     }
 
-    protected function registerServiceProviders()
+    protected function registerServiceProviders(): void
     {
         $providers = [
             DatabaseServiceProvider::class,
