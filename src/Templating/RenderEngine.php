@@ -50,6 +50,11 @@ class RenderEngine
             return $this->cacheManager->get($cacheKey);
         }
 
+        // Render the content first if it's a ComponentService
+        if (isset($data['content']) && $data['content'] instanceof ComponentService) {
+            $data['content'] = $data['content']->render();
+        }
+
         $renderedContent = $this->layoutManager->render($layoutName, $data);
 
         if ($useCache) {
@@ -69,5 +74,11 @@ class RenderEngine
     {
         $dataHash = md5(serialize($data));
         return "render:{$type}:{$name}:{$dataHash}";
+    }
+
+    public function renderPartialUpdate(string $componentName, array $data = []): string
+    {
+        $component = $this->componentRegistry->resolve($componentName, $data);
+        return $component->render();
     }
 }
