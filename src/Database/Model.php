@@ -70,8 +70,9 @@ abstract class Model
     public static function find($id)
     {
         $query = self::getQueryBuilder();
-        $result = $query->table((new static)->table)
-                        ->where((new static)->primaryKey, $id)
+        $model = new static();
+        $result = $query->table($model->table)
+                        ->where($model->primaryKey, $id)
                         ->first();
         return $result ? new static($result) : null;
     }
@@ -79,7 +80,8 @@ abstract class Model
     public static function all()
     {
         $query = self::getQueryBuilder();
-        $results = $query->table((new static)->table)->get();
+        $model = new static();
+        $results = $query->table($model->table)->get();
         return array_map(function ($result) {
             return new static($result);
         }, $results);
@@ -150,11 +152,12 @@ abstract class Model
     protected static function getQueryBuilder()
     {
         if (!self::$queryBuilder) {
+            $config = Container::getInstance()->get('config');
             self::$queryBuilder = new QueryBuilder(new Connection(
-                config('database.host'),
-                config('database.database'),
-                config('database.username'),
-                config('database.password')
+                $config['database']['host'],
+                $config['database']['database'],
+                $config['database']['username'],
+                $config['database']['password']
             ));
         }
         return self::$queryBuilder;
