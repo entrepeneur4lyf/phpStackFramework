@@ -154,7 +154,7 @@ if (php_sapi_name() === 'cli-server') {
             switch ($uri) {
                 case '/':
                 case '/home':
-                    if ($request->header('HX-Request')) {
+                    if ($request->getHeader('HX-Request')) {
                         $content = $renderEngine->render('home-page');
                     } else {
                         $content = $renderEngine->renderLayout('main-layout', [
