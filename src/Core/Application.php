@@ -53,7 +53,7 @@ class Application
         foreach ($providers as $providerClass) {
             $provider = new $providerClass($this->container);
             $provider->register();
-            $this->container->bind($providerClass, $provider);
+            $this->container->bind($providerClass, fn() => $provider);
         }
 
         foreach ($providers as $providerClass) {
