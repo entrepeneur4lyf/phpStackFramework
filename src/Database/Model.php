@@ -89,12 +89,14 @@ abstract class Model
 
     protected static function newInstance()
     {
-        return new static();
+        $className = static::class;
+        return new $className();
     }
 
     protected static function newInstanceWithAttributes(array $attributes = [])
     {
-        $instance = new static();
+        $className = static::class;
+        $instance = new $className();
         $instance->fill($attributes);
         return $instance;
     }
