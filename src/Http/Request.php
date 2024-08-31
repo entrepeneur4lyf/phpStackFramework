@@ -193,7 +193,7 @@ class Request implements ServerRequestInterface, RequestInterface
         unset($new->attributes[$name]);
         return $new;
     }
-}
+
     public function withUri(UriInterface $uri, $preserveHost = false): static
     {
         $new = clone $this;
@@ -205,3 +205,4 @@ class Request implements ServerRequestInterface, RequestInterface
 
         return $new;
     }
+}

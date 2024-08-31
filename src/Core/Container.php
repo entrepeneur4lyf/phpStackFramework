@@ -181,9 +181,9 @@ class Container implements ContainerInterface
         return isset($this->bindings[$abstract]['shared']) &&
                $this->bindings[$abstract]['shared'] === true;
     }
-}
 
     public function has(string $id): bool
     {
         return isset($this->bindings[$id]) || isset($this->instances[$id]);
     }
+}
