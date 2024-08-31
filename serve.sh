@@ -4,8 +4,8 @@
 php -S localhost:8000 -t public &
 SERVER_PID=$!
 
-# Wait for 30 seconds
-sleep 30
+# Wait for 15 seconds
+sleep 15
 
 # Gracefully terminate the server
 kill -TERM $SERVER_PID
