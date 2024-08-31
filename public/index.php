@@ -3,24 +3,49 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use phpStack\Core\Application;
+use phpStack\Templating\RenderEngine;
+use phpStack\WebSocket\WebSocketManager;
+use phpStack\WebSocket\UpdateDispatcher;
+use Ratchet\Http\HttpServer;
+use Ratchet\Server\IoServer;
+use Ratchet\WebSocket\WsServer;
 
-// Create the application instance
-$app = Application::getInstance();
+$app = new Application();
 
-// Load configuration
-$app->getConfig()->load(__DIR__ . '/../config/app.php');
+// Handle HTTP requests
+$request = $_SERVER['REQUEST_URI'];
 
-// Set up routes
-$router = $app->getRouter();
+$renderEngine = $app->container->get(RenderEngine::class);
 
-$router->get('/', function () {
-    return new phpStack\Http\Response('Welcome to phpStack Framework!');
-});
+switch ($request) {
+    case '/':
+    case '/home':
+        echo $renderEngine->renderLayout('main-layout', [
+            'title' => 'Home',
+            'content' => $renderEngine->render('home-page')
+        ]);
+        break;
+    case '/about':
+        echo $renderEngine->renderLayout('main-layout', [
+            'title' => 'About',
+            'content' => $renderEngine->render('about-page')
+        ]);
+        break;
+    default:
+        http_response_code(404);
+        echo "404 Not Found";
+        break;
+}
 
-$router->get('/hello/{name}', function (phpStack\Http\Request $request) use ($router) {
-    $name = $router->getRouteParameter('name');
-    return new phpStack\Http\Response("Hello, {$name}!");
-});
+// Set up WebSocket server
+$updateDispatcher = $app->container->get(UpdateDispatcher::class);
+$webSocketManager = new WebSocketManager($updateDispatcher);
 
-// Run the application
-$app->run();
+$server = IoServer::factory(
+    new HttpServer(
+        new WsServer($webSocketManager)
+    ),
+    8080
+);
+
+$server->run();

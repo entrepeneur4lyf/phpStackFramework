@@ -1,6 +1,6 @@
 <?php
 
-namespace phpStack\Core;
+namespace phpStack;
 
 use phpStack\Container\Container;
 use phpStack\Providers\DatabaseServiceProvider;
@@ -8,9 +8,9 @@ use phpStack\Providers\TemplatingServiceProvider;
 
 class Application
 {
-    public $container;  // Changed from protected to public for easier access
+    protected $container;
 
-    public function __construct()  // Changed from private to public
+    public function __construct()
     {
         $this->container = new Container();
         $this->registerServiceProviders();

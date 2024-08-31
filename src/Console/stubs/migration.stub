@@ -1,0 +1,16 @@
+<?php
+
+use phpStack\Database\Migration\Migration;
+
+class {{className}} extends Migration
+{
+    public function up()
+    {
+        // Implement the migration
+    }
+
+    public function down()
+    {
+        // Implement the rollback
+    }
+}
