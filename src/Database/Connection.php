@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpStack\Database;
+namespace phpStack\Database;
 
 use PDO;
 use PDOException;

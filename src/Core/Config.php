@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpStack\Core;
+namespace phpStack\Core;
 
 class Config
 {

@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Core;
 
-use PhpStack\Core\Container;
+use phpStack\Core\Container;
 use PHPUnit\Framework\TestCase;
 
 class ContainerTest extends TestCase

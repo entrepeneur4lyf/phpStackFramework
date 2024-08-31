@@ -48,10 +48,10 @@ class Application
     // ... other methods ...
 }
 
-use PhpStack\Http\Request;
-use PhpStack\Http\Response;
-use PhpStack\Routing\Router;
-use PhpStack\Http\MiddlewarePipeline;
+use phpStack\Http\Request;
+use phpStack\Http\Response;
+use phpStack\Routing\Router;
+use phpStack\Http\MiddlewarePipeline;
 use Psr\Container\ContainerInterface;
 
 class Application
