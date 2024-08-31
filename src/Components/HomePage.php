@@ -15,6 +15,7 @@ class HomePage extends ComponentService
             <button onclick="wsHandler.requestUpdate('dynamic-content', {type: 'welcome'})">
                 Load Welcome Message
             </button>
+            <div id="dynamic-content"></div>
         </div>
         HTML;
     }

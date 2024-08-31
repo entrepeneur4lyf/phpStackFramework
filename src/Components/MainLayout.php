@@ -34,6 +34,7 @@ class MainLayout extends ComponentService
                 </main>
             </div>
             {$this->componentRegistry->render('footer')}
+            <div id="dynamic-content"></div>
             <script src="/js/websocket-handler.js"></script>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
