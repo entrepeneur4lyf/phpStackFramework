@@ -70,26 +70,31 @@ abstract class Model
     public static function find($id)
     {
         $query = static::getQueryBuilder();
-        $model = new static();
+        $model = static::newInstance();
         $result = $query->table($model->table)
                         ->where($model->primaryKey, $id)
                         ->first();
-        return $result ? $model->newInstanceFromStatic($result) : null;
+        return $result ? static::newInstanceWithAttributes($result) : null;
     }
 
     public static function all()
     {
         $query = static::getQueryBuilder();
-        $model = new static();
+        $model = static::newInstance();
         $results = $query->table($model->table)->get();
-        return array_map(function ($result) use ($model) {
-            return $model->newInstanceFromStatic($result);
+        return array_map(function ($result) {
+            return static::newInstanceWithAttributes($result);
         }, $results);
     }
 
-    protected function newInstanceFromStatic(array $attributes = [])
+    protected static function newInstance()
     {
-        $instance = new static();
+        return new static();
+    }
+
+    protected static function newInstanceWithAttributes(array $attributes = [])
+    {
+        $instance = static::newInstance();
         $instance->fill($attributes);
         return $instance;
     }
