@@ -17,12 +17,12 @@ class DiffEngine
 
         $changes = [];
 
-        $this->compareNodes($oldDom->documentElement, $newDom->documentElement, $oldXpath, $newXpath, $changes);
+        $this->compareNodes($oldDom->documentElement, $newDom->documentElement, $oldXpath, $newXpath, $changes, $newDom);
 
         return $changes;
     }
 
-    private function compareNodes(\DOMNode $oldNode, \DOMNode $newNode, \DOMXPath $oldXpath, \DOMXPath $newXpath, array &$changes, string $path = '/')
+    private function compareNodes(\DOMNode $oldNode, \DOMNode $newNode, \DOMXPath $oldXpath, \DOMXPath $newXpath, array &$changes, \DOMDocument $newDom, string $path = '/')
     {
         if ($oldNode->nodeType !== XML_ELEMENT_NODE || $newNode->nodeType !== XML_ELEMENT_NODE) {
             return;
@@ -62,7 +62,7 @@ class DiffEngine
             } elseif ($oldChild && !$newChild) {
                 $changes[] = ['action' => 'remove', 'path' => $path . '/' . ($i + 1)];
             } else {
-                $this->compareNodes($oldChild, $newChild, $oldXpath, $newXpath, $changes, $path . '/' . ($i + 1));
+                $this->compareNodes($oldChild, $newChild, $oldXpath, $newXpath, $changes, $newDom, $path . '/' . ($i + 1));
             }
         }
     }

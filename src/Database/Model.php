@@ -2,7 +2,6 @@
 
 namespace phpStack\Database;
 
-use phpStack\Core\Container;
 use phpStack\Database\QueryBuilder;
 
 abstract class Model
@@ -11,6 +10,7 @@ abstract class Model
     protected $primaryKey = 'id';
     protected $attributes = [];
     protected $relations = [];
+    protected static $queryBuilder;
 
     public function __construct(array $attributes = [])
     {
@@ -53,7 +53,7 @@ abstract class Model
     // CRUD Operations
     public function save()
     {
-        $query = Container::getInstance()->get(QueryBuilder::class);
+        $query = self::getQueryBuilder();
         if (isset($this->attributes[$this->primaryKey])) {
             // Update
             $query->table($this->table)
@@ -69,7 +69,7 @@ abstract class Model
 
     public static function find($id)
     {
-        $query = Container::getInstance()->get(QueryBuilder::class);
+        $query = self::getQueryBuilder();
         $result = $query->table((new static)->table)
                         ->where((new static)->primaryKey, $id)
                         ->first();
@@ -78,7 +78,7 @@ abstract class Model
 
     public static function all()
     {
-        $query = Container::getInstance()->get(QueryBuilder::class);
+        $query = self::getQueryBuilder();
         $results = $query->table((new static)->table)->get();
         return array_map(function ($result) {
             return new static($result);
@@ -87,7 +87,7 @@ abstract class Model
 
     public function delete()
     {
-        $query = Container::getInstance()->get(QueryBuilder::class);
+        $query = self::getQueryBuilder();
         return $query->table($this->table)
                      ->where($this->primaryKey, $this->attributes[$this->primaryKey])
                      ->delete();
@@ -117,7 +117,7 @@ abstract class Model
 
     protected function getRelationship($related, $foreignKey, $localKey, $type)
     {
-        $query = Container::getInstance()->get(QueryBuilder::class);
+        $query = self::getQueryBuilder();
         $relatedModel = new $related;
 
         if ($type === 'belongsTo') {
@@ -134,9 +134,9 @@ abstract class Model
     protected function getForeignKey($related = null)
     {
         if ($related) {
-            return strtolower(class_basename($related)) . '_id';
+            return strtolower(basename(str_replace('\\', '/', $related))) . '_id';
         }
-        return strtolower(class_basename($this)) . '_id';
+        return strtolower(basename(str_replace('\\', '/', get_class($this)))) . '_id';
     }
 
     protected function getRelationValue($key)
@@ -145,5 +145,18 @@ abstract class Model
             $this->relations[$key] = $this->$key()->getResults();
         }
         return $this->relations[$key];
+    }
+
+    protected static function getQueryBuilder()
+    {
+        if (!self::$queryBuilder) {
+            self::$queryBuilder = new QueryBuilder(new Connection(
+                config('database.host'),
+                config('database.database'),
+                config('database.username'),
+                config('database.password')
+            ));
+        }
+        return self::$queryBuilder;
     }
 }

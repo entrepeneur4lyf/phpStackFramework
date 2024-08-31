@@ -2,10 +2,10 @@
 
 namespace phpStack\Providers;
 
-use phpStack\Container\Container;
+use phpStack\Core\ServiceProvider;
 use phpStack\Database\Connection;
 use phpStack\Database\Migration\MigrationManager;
-use phpStack\Core\ServiceProvider;
+use phpStack\Database\QueryBuilder;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
@@ -19,6 +19,10 @@ class DatabaseServiceProvider extends ServiceProvider
                 $config['username'],
                 $config['password']
             );
+        });
+
+        $this->container->singleton(QueryBuilder::class, function ($container) {
+            return new QueryBuilder($container->get(Connection::class));
         });
 
         $this->container->singleton(MigrationManager::class, function ($container) {

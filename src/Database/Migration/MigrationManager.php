@@ -3,7 +3,7 @@
 namespace phpStack\Database\Migration;
 
 use phpStack\Database\Connection;
-use phpStack\Core\Container;
+use phpStack\Database\QueryBuilder;
 
 class MigrationManager
 {

@@ -2,8 +2,7 @@
 
 namespace phpStack\WebSocket;
 
-use Ratchet\MessageComponentInterface;
-use Ratchet\ConnectionInterface;
+use React\Socket\ConnectionInterface;
 use phpStack\Core\Container;
 
 class WebSocketManager implements MessageComponentInterface

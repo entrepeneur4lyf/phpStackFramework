@@ -25,7 +25,8 @@ class Application
         ];
 
         foreach ($providers as $provider) {
-            $instance = new $provider($this->container);
+            $instance = new $provider();
+            $instance->setContainer($this->container);
             $instance->register();
         }
 

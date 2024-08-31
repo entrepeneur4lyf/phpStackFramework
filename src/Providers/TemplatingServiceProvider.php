@@ -3,13 +3,12 @@
 namespace phpStack\Providers;
 
 use phpStack\Core\ServiceProvider;
-use phpStack\Core\Container;
 use phpStack\Templating\ComponentRegistry;
 use phpStack\Templating\LayoutManager;
 use phpStack\Templating\RenderEngine;
 use phpStack\Templating\DiffEngine;
 use phpStack\WebSocket\UpdateDispatcher;
-use phpStack\Cache\CacheManager;
+use phpStack\Core\Cache\CacheManager;
 
 class TemplatingServiceProvider extends ServiceProvider
 {
@@ -25,6 +24,11 @@ class TemplatingServiceProvider extends ServiceProvider
 
         $this->container->singleton(DiffEngine::class, function ($container) {
             return new DiffEngine();
+        });
+
+        $this->container->singleton(CacheManager::class, function ($container) {
+            // Implement CacheManager instantiation
+            return new CacheManager();
         });
 
         $this->container->singleton(RenderEngine::class, function ($container) {

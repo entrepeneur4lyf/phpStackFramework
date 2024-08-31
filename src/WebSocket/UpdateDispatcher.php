@@ -2,7 +2,7 @@
 
 namespace phpStack\WebSocket;
 
-use Ratchet\ConnectionInterface;
+use React\Socket\ConnectionInterface;
 use phpStack\Core\Container;
 use phpStack\Templating\RenderEngine;
 use phpStack\Templating\DiffEngine;
