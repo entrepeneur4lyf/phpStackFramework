@@ -22,9 +22,15 @@ class Application
     public function __construct(?ContainerInterface $container = null)
     {
         $this->container = $container ?? new Container();
-        $this->router = $container->get(Router::class);
-        $this->middlewarePipeline = $container->get(MiddlewarePipeline::class);
-        $this->config = $container->get(Config::class);
+        
+        // Bind necessary classes to the container
+        $this->container->bind(Router::class, Router::class);
+        $this->container->bind(MiddlewarePipeline::class, MiddlewarePipeline::class);
+        $this->container->bind(Config::class, Config::class);
+        
+        $this->router = $this->container->get(Router::class);
+        $this->middlewarePipeline = $this->container->get(MiddlewarePipeline::class);
+        $this->config = $this->container->get(Config::class);
         $this->registerServiceProviders();
     }
 
