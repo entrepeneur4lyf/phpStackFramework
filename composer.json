@@ -1,6 +1,6 @@
 {
     "name": "phpstack/framework",
-    "description": "A scalable and efficient PHP framework",
+    "description": "A comprehensive, scalable, and efficient PHP framework for building modern web applications with real-time capabilities",
     "type": "project",
     "require": {
         "php": "^8.2",
