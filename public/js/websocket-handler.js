@@ -5,14 +5,27 @@ class WebSocketHandler {
     }
 
     connect() {
-        this.socket = new WebSocket(this.url);
-        this.socket.onopen = () => console.log('WebSocket connected');
-        this.socket.onmessage = this.handleMessage.bind(this);
-        this.socket.onclose = () => {
-            console.log('WebSocket disconnected. Reconnecting...');
+        try {
+            this.socket = new WebSocket(this.url);
+            this.socket.onopen = () => console.log('WebSocket connected');
+            this.socket.onmessage = this.handleMessage.bind(this);
+            this.socket.onclose = (event) => {
+                if (event.wasClean) {
+                    console.log(`WebSocket closed cleanly, code=${event.code}, reason=${event.reason}`);
+                } else {
+                    console.error('WebSocket connection died');
+                }
+                console.log('Attempting to reconnect...');
+                setTimeout(() => this.connect(), 5000);
+            };
+            this.socket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                // You might want to implement some error handling logic here
+            };
+        } catch (error) {
+            console.error('Failed to create WebSocket:', error);
             setTimeout(() => this.connect(), 5000);
-        };
-        this.socket.onerror = (error) => console.error('WebSocket error:', error);
+        }
     }
 
     handleMessage(event) {

@@ -29,7 +29,9 @@ class MainLayout extends ComponentService
             <div data-component="footer"></div>
             <script src="/js/websocket-handler.js"></script>
             <script>
-                const wsHandler = new WebSocketHandler('ws://localhost:8080');
+                document.addEventListener('DOMContentLoaded', function() {
+                    window.wsHandler = new WebSocketHandler('ws://localhost:8080');
+                });
             </script>
         </body>
         </html>
