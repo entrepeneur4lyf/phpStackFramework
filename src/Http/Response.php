@@ -28,5 +28,73 @@ class Response implements ResponseInterface
         // Set headers, output body, etc.
     }
 
-    // Implement other methods from ResponseInterface
+    public function getProtocolVersion()
+    {
+        // Implement method
+    }
+
+    public function withProtocolVersion($version)
+    {
+        // Implement method
+    }
+
+    public function getHeaders()
+    {
+        // Implement method
+    }
+
+    public function hasHeader($name)
+    {
+        // Implement method
+    }
+
+    public function getHeader($name)
+    {
+        // Implement method
+    }
+
+    public function getHeaderLine($name)
+    {
+        // Implement method
+    }
+
+    public function withHeader($name, $value)
+    {
+        // Implement method
+    }
+
+    public function withAddedHeader($name, $value)
+    {
+        // Implement method
+    }
+
+    public function withoutHeader($name)
+    {
+        // Implement method
+    }
+
+    public function getBody()
+    {
+        // Implement method
+    }
+
+    public function withBody(StreamInterface $body)
+    {
+        // Implement method
+    }
+
+    public function getStatusCode()
+    {
+        // Implement method
+    }
+
+    public function withStatus($code, $reasonPhrase = '')
+    {
+        // Implement method
+    }
+
+    public function getReasonPhrase()
+    {
+        // Implement method
+    }
 }
