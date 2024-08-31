@@ -8,12 +8,21 @@ use phpStack\Providers\TemplatingServiceProvider;
 
 class Application
 {
-    public $container;  // Changed from protected to public for easier access
+    public $container;
+    private static $instance;
 
-    public function __construct()  // Changed from private to public
+    public function __construct()
     {
         $this->container = new Container();
         $this->registerServiceProviders();
+    }
+
+    public static function getInstance(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
     protected function registerServiceProviders()

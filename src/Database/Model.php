@@ -69,25 +69,25 @@ abstract class Model
 
     public static function find($id)
     {
-        $query = self::getQueryBuilder();
+        $query = static::getQueryBuilder();
         $model = new static();
         $result = $query->table($model->table)
                         ->where($model->primaryKey, $id)
                         ->first();
-        return $result ? $model->newInstance($result) : null;
+        return $result ? $model->newInstanceFromStatic($result) : null;
     }
 
     public static function all()
     {
-        $query = self::getQueryBuilder();
+        $query = static::getQueryBuilder();
         $model = new static();
         $results = $query->table($model->table)->get();
         return array_map(function ($result) use ($model) {
-            return $model->newInstance($result);
+            return $model->newInstanceFromStatic($result);
         }, $results);
     }
 
-    protected function newInstance(array $attributes = [])
+    protected function newInstanceFromStatic(array $attributes = [])
     {
         $instance = new static();
         $instance->fill($attributes);
@@ -159,7 +159,8 @@ abstract class Model
     protected static function getQueryBuilder()
     {
         if (!self::$queryBuilder) {
-            $config = \phpStack\Core\Container::getInstance()->get('config');
+            $container = \phpStack\Core\Application::getInstance()->container;
+            $config = $container->get('config');
             self::$queryBuilder = new QueryBuilder(new Connection(
                 $config['database']['host'],
                 $config['database']['database'],
