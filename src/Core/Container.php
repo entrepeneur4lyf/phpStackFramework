@@ -7,11 +7,20 @@ use ReflectionClass;
 use ReflectionParameter;
 use Exception;
 
+namespace phpStack\Core;
+
+use Closure;
+use ReflectionClass;
+use ReflectionParameter;
+use Exception;
+
+class Container implements \Psr\Container\ContainerInterface
+{
     /** @var array<string, array{concrete: callable, shared: bool}> */
-    protected $bindings = [];
+    protected array $bindings = [];
 
     /** @var array<string, mixed> */
-    protected $instances = [];
+    protected array $instances = [];
 
     public function bind(string $abstract, $concrete = null, bool $shared = false): void
     {
