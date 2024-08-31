@@ -4,15 +4,25 @@
     "type": "project",
     "require": {
         "php": "^8.0|^8.1|^8.2",
-        "openswoole/core": "22.1.5"
+        "openswoole/core": "22.1.5",
+        "psr/http-message": "^1.0",
+        "psr/http-server-handler": "^1.0",
+        "psr/http-server-middleware": "^1.0",
+        "psr/container": "^2.0",
+        "monolog/monolog": "^2.0"
     },
     "require-dev": {
-        "phpstan/phpstan": "^1.10"
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^1.10",
+        "mockery/mockery": "^1.5"
     },
     "autoload": {
         "psr-4": {
             "phpStack\\": "src/"
-        }
+        },
+        "files": [
+            "src/Core/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -22,6 +32,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "phpstan": "phpstan analyse src tests"
+        "phpstan": "phpstan analyse src tests",
+        "test": "phpunit"
     }
 }
