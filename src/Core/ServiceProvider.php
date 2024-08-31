@@ -4,16 +4,16 @@ namespace phpStack\Core;
 
 abstract class ServiceProvider
 {
-    protected $container;
+    protected Container $container;
 
-    public function setContainer(Container $container)
+    public function setContainer(Container $container): void
     {
         $this->container = $container;
     }
 
-    abstract public function register();
+    abstract public function register(): void;
 
-    public function boot()
+    public function boot(): void
     {
     }
 }

@@ -4,6 +4,7 @@ namespace phpStack\Core\Cache;
 
 class CacheManager
 {
+    /** @var array<string, mixed> */
     protected array $cache = [];
 
     public function has(string $key): bool

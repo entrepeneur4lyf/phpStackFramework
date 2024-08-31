@@ -25,12 +25,16 @@ class Container
         $this->bindings[$abstract] = compact('concrete', 'shared');
     }
 
-    public function singleton($abstract, $concrete = null)
+    public function singleton(string $abstract, callable $concrete = null): void
     {
         $this->bind($abstract, $concrete, true);
     }
 
-    public function make($abstract, array $parameters = [])
+    /**
+     * @param array<string, mixed> $parameters
+     * @return mixed
+     */
+    public function make(string $abstract, array $parameters = [])
     {
         if (isset($this->instances[$abstract])) {
             return $this->instances[$abstract];
@@ -51,12 +55,18 @@ class Container
         return $object;
     }
 
-    public function get($abstract)
+    /**
+     * @return mixed
+     */
+    public function get(string $abstract)
     {
         return $this->make($abstract);
     }
 
-    protected function getConcrete($abstract)
+    /**
+     * @return callable|string|null
+     */
+    protected function getConcrete(string $abstract)
     {
         if (!isset($this->bindings[$abstract])) {
             return $abstract;
