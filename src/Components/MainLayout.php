@@ -46,10 +46,13 @@ class MainLayout extends ComponentService
             {$this->componentRegistry->render('footer')}
             <div id="dynamic-content"></div>
             <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-            <script src="https://unpkg.com/htmx.org@2.0.0/dist/htmx.min.js"></script>
+            <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
             <script>
-                htmx.on("htmx:load", function() {
-                    htmx.createWebSocket('ws://localhost:8080');
+                document.body.addEventListener('htmx:wsConnected', function(event) {
+                    console.log('WebSocket Connected!');
+                });
+                document.body.addEventListener('htmx:wsError', function(event) {
+                    console.error('WebSocket Error:', event.detail.error);
                 });
             </script>
         </body>

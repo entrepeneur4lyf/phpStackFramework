@@ -12,7 +12,7 @@ class DynamicContent extends ComponentService
         $content = $this->getContentByType($type);
 
         return <<<HTML
-        <div data-component="dynamic-content" id="dynamic-content">
+        <div data-component="dynamic-content" id="dynamic-content" hx-ext="ws" ws-connect="/ws">
             <h2>Dynamic Content</h2>
             {$content}
         </div>
