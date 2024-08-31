@@ -124,13 +124,15 @@ if (php_sapi_name() === 'cli-server') {
     });
 
     $server->on('open', function (WebSocketServer $server, $request) {
-        echo "New WebSocket connection\n";
+        echo "New WebSocket connection: {$request->fd}\n";
     });
 
     $server->on('message', function (WebSocketServer $server, Frame $frame) use ($app) {
         $updateDispatcher = $app->container->get(UpdateDispatcher::class);
         $webSocketManager = new WebSocketManager($updateDispatcher);
-        
+    
+        echo "Received message from connection {$frame->fd}: " . substr($frame->data, 0, 50) . "...\n";
+    
         // Handle WebSocket messages
         $webSocketManager->onMessage($frame->fd, $frame->data);
     });
