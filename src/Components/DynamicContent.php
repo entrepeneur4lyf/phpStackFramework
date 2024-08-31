@@ -12,7 +12,7 @@ class DynamicContent extends ComponentService
         $content = $this->getContentByType($type);
 
         return <<<HTML
-        <div data-component="dynamic-content">
+        <div data-component="dynamic-content" id="dynamic-content">
             <h2>Dynamic Content</h2>
             {$content}
         </div>
@@ -26,8 +26,16 @@ class DynamicContent extends ComponentService
                 return "<p>Welcome to our site! We're glad you're here.</p>";
             case 'team':
                 return "<p>Our team consists of passionate developers and designers.</p>";
+            case 'project':
+                return "<p>We're currently working on an exciting new project!</p>";
             default:
                 return "<p>Click a button to load dynamic content.</p>";
         }
+    }
+
+    public function update(array $data): string
+    {
+        $type = $data['type'] ?? 'default';
+        return $this->getContentByType($type);
     }
 }
