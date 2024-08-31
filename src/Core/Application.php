@@ -5,13 +5,26 @@ namespace phpStack\Core;
 use phpStack\Core\Container;
 use phpStack\Providers\DatabaseServiceProvider;
 use phpStack\Providers\TemplatingServiceProvider;
+use phpStack\Http\Request;
+use phpStack\Http\Response;
+use phpStack\Routing\Router;
+use phpStack\Http\MiddlewarePipeline;
+use Psr\Container\ContainerInterface;
 
+class Application
+{
     public Container $container;
     private static ?self $instance = null;
+    protected Router $router;
+    protected MiddlewarePipeline $middlewarePipeline;
+    protected Config $config;
 
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
-        $this->container = new Container();
+        $this->container = $container;
+        $this->router = $container->get(Router::class);
+        $this->middlewarePipeline = $container->get(MiddlewarePipeline::class);
+        $this->config = $container->get(Config::class);
         $this->registerServiceProviders();
     }
 
@@ -43,30 +56,6 @@ use phpStack\Providers\TemplatingServiceProvider;
         }
     }
 
-    // ... other methods ...
-}
-
-use phpStack\Http\Request;
-use phpStack\Http\Response;
-use phpStack\Routing\Router;
-use phpStack\Http\MiddlewarePipeline;
-use Psr\Container\ContainerInterface;
-
-class Application
-{
-    protected ContainerInterface $container;
-    protected Router $router;
-    protected MiddlewarePipeline $middlewarePipeline;
-    protected Config $config;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->router = $container->get(Router::class);
-        $this->middlewarePipeline = $container->get(MiddlewarePipeline::class);
-        $this->config = $container->get(Config::class);
-    }
-
     public function bootstrap(): void
     {
         // Load configuration
@@ -82,16 +71,6 @@ class Application
         $configPath = $this->container->get('config_path');
         $this->config->load($configPath . '/app.php');
         $this->config->load($configPath . '/database.php');
-    }
-
-    protected function registerServiceProviders(): void
-    {
-        $providers = $this->config->get('app.providers', []);
-        foreach ($providers as $providerClass) {
-            $provider = new $providerClass($this->container);
-            $provider->register();
-            $provider->boot();
-        }
     }
 
     protected function setupErrorHandling(): void
