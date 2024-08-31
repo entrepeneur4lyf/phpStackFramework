@@ -15,20 +15,59 @@ class Response implements ResponseInterface
 
     public function sendHeaders(): void
     {
-        // Implementation
+        if (headers_sent()) {
+            return;
+        }
+
+        // Send HTTP Status
+        $statusLine = sprintf('HTTP/%s %s %s',
+            $this->getProtocolVersion(),
+            $this->getStatusCode(),
+            $this->getReasonPhrase()
+        );
+        header($statusLine, true, $this->getStatusCode());
+
+        // Send headers
+        foreach ($this->getHeaders() as $name => $values) {
+            $name = str_replace(' ', '-', ucwords(strtolower(str_replace('-', ' ', $name))));
+            $replace = true;
+            foreach ($values as $value) {
+                header("$name: $value", $replace);
+                $replace = false;
+            }
+        }
     }
 
     public function sendContent(): void
     {
-        // Implementation
+        echo $this->getBody();
     }
-
-    // Implement ResponseInterface methods
 
     public function send(): void
     {
-        // Send the response to the client
-        // Set headers, output body, etc.
+        $this->sendHeaders();
+        $this->sendContent();
+
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif ('cli' !== PHP_SAPI) {
+            static::closeOutputBuffers(0, true);
+        }
+    }
+
+    private static function closeOutputBuffers(int $targetLevel, bool $flush): void
+    {
+        $status = ob_get_status(true);
+        $level = count($status);
+        $flags = PHP_OUTPUT_HANDLER_REMOVABLE | ($flush ? PHP_OUTPUT_HANDLER_FLUSHABLE : PHP_OUTPUT_HANDLER_CLEANABLE);
+
+        while ($level-- > $targetLevel && ($s = $status[$level]) && (!isset($s['del']) ? !isset($s['flags']) || ($s['flags'] & $flags) === $flags : $s['del'])) {
+            if ($flush) {
+                ob_end_flush();
+            } else {
+                ob_end_clean();
+            }
+        }
     }
 
     public function getProtocolVersion(): string
@@ -111,6 +150,27 @@ class Response implements ResponseInterface
 
     public function getReasonPhrase(): string
     {
+        if (empty($this->reasonPhrase) && isset(self::$phrases[$this->statusCode])) {
+            return self::$phrases[$this->statusCode];
+        }
         return $this->reasonPhrase;
     }
+
+    private static array $phrases = [
+        200 => 'OK',
+        201 => 'Created',
+        202 => 'Accepted',
+        204 => 'No Content',
+        301 => 'Moved Permanently',
+        302 => 'Found',
+        304 => 'Not Modified',
+        400 => 'Bad Request',
+        401 => 'Unauthorized',
+        403 => 'Forbidden',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        500 => 'Internal Server Error',
+        502 => 'Bad Gateway',
+        503 => 'Service Unavailable',
+    ];
 }

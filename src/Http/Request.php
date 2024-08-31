@@ -18,6 +18,7 @@ class Request implements ServerRequestInterface
     protected array $cookieParams = [];
     protected array $queryParams = [];
     protected array $uploadedFiles = [];
+    protected $parsedBody;
 
     public function getMethod(): string
     {
@@ -29,13 +30,20 @@ class Request implements ServerRequestInterface
         return $this->uri;
     }
 
-    // Implement ServerRequestInterface methods
-
     public static function createFromGlobals(): self
     {
-        // Create a new Request instance from PHP globals
-        // Implement the logic to populate the request from $_SERVER, $_GET, $_POST, etc.
-        return new self();
+        $request = new self();
+        $request->serverParams = $_SERVER;
+        $request->cookieParams = $_COOKIE;
+        $request->queryParams = $_GET;
+        $request->uploadedFiles = self::normalizeFiles($_FILES);
+        $request->parsedBody = $_POST;
+        $request->method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        $request->uri = self::createUriFromGlobals();
+        $request->protocol = isset($_SERVER['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) : '1.1';
+        $request->headers = self::getHeadersFromServer($_SERVER);
+
+        return $request;
     }
 
     public function getProtocolVersion(): string
@@ -165,7 +173,7 @@ class Request implements ServerRequestInterface
 
     public function getParsedBody()
     {
-        // Implement method
+        return $this->parsedBody;
     }
 
     public function withParsedBody($data): static
@@ -182,7 +190,7 @@ class Request implements ServerRequestInterface
 
     public function getAttribute($name, $default = null)
     {
-        // Implement method
+        return $this->attributes[$name] ?? $default;
     }
 
     public function withAttribute($name, $value): static

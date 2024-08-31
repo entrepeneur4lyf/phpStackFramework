@@ -15,3 +15,5 @@ PROJECT_CONTEXT
 devmap.md
 SUMMARY.md
 .aider*
+*.Identifier
+frankenphp
