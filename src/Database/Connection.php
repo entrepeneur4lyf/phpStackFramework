@@ -4,10 +4,10 @@ namespace phpStack\Database;
 
 class Connection
 {
-    protected $host;
-    protected $database;
-    protected $username;
-    protected $password;
+    protected string $host;
+    protected string $database;
+    protected string $username;
+    protected string $password;
 
     public function __construct(string $host, string $database, string $username, string $password)
     {

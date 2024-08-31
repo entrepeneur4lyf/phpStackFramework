@@ -7,8 +7,8 @@ use phpStack\Core\Container;
 
 class WebSocketManager implements MessageComponentInterface
 {
-    protected $clients;
-    protected $updateDispatcher;
+    protected \SplObjectStorage $clients;
+    protected UpdateDispatcher $updateDispatcher;
 
     public function __construct(UpdateDispatcher $updateDispatcher)
     {
@@ -16,34 +16,38 @@ class WebSocketManager implements MessageComponentInterface
         $this->updateDispatcher = $updateDispatcher;
     }
 
-    public function onOpen(ConnectionInterface $conn)
+    public function onOpen(ConnectionInterface $conn): void
     {
         $this->clients->attach($conn);
         echo "New connection! ({$conn->resourceId})\n";
     }
 
-    public function onMessage(ConnectionInterface $from, $msg)
+    public function onMessage(ConnectionInterface $from, string $msg): void
     {
         $data = json_decode($msg, true);
-        $this->updateDispatcher->dispatch($from, $data);
+        if (is_array($data)) {
+            $this->updateDispatcher->dispatch($from, $data);
+        }
     }
 
-    public function onClose(ConnectionInterface $conn)
+    public function onClose(ConnectionInterface $conn): void
     {
         $this->clients->detach($conn);
         echo "Connection {$conn->resourceId} has disconnected\n";
     }
 
-    public function onError(ConnectionInterface $conn, \Exception $e)
+    public function onError(ConnectionInterface $conn, \Exception $e): void
     {
         echo "An error has occurred: {$e->getMessage()}\n";
         $conn->close();
     }
 
-    public function broadcast($message)
+    public function broadcast(string $message): void
     {
         foreach ($this->clients as $client) {
-            $client->send($message);
+            if ($client instanceof ConnectionInterface) {
+                $client->send($message);
+            }
         }
     }
 }
