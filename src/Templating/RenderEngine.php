@@ -67,6 +67,10 @@ class RenderEngine
             }
         }
 
+        if (!isset($data['content']) || empty($data['content'])) {
+            $data['content'] = '<p>No content available.</p>';
+        }
+
         $renderedContent = $this->layoutManager->render($layoutName, $data);
 
         if ($useCache) {

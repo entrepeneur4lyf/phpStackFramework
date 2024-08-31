@@ -40,8 +40,8 @@ class MainLayout extends ComponentService
                 {$this->componentRegistry->render('sidebar')}
                 <main>
                     {$mainContent}
+                    <div id="dynamic-content"></div>
                 </main>
-                <div id="dynamic-content"></div>
             </div>
             {$this->componentRegistry->render('footer')}
             <div id="dynamic-content"></div>
