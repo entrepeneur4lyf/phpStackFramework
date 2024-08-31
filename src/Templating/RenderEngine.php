@@ -42,6 +42,11 @@ class RenderEngine
         return $renderedContent;
     }
 
+    public function resolve(string $componentName, array $data = []): ComponentService
+    {
+        return $this->componentRegistry->resolve($componentName, $data);
+    }
+
     public function renderLayout(string $layoutName, array $data = [], bool $useCache = true): string
     {
         $cacheKey = $this->getCacheKey($layoutName, $data, 'layout');
