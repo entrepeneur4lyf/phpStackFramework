@@ -12,7 +12,7 @@ use phpStack\Core\Cache\CacheManager;
 
 class TemplatingServiceProvider extends ServiceProvider
 {
-    public function register()
+    public function register(): void
     {
         $this->container->singleton(ComponentRegistry::class, function ($container) {
             return new ComponentRegistry($container);
@@ -48,7 +48,7 @@ class TemplatingServiceProvider extends ServiceProvider
         });
     }
 
-    public function boot()
+    public function boot(): void
     {
         $componentRegistry = $this->container->get(ComponentRegistry::class);
 

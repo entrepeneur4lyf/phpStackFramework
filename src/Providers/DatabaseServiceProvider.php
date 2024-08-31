@@ -9,7 +9,7 @@ use phpStack\Database\QueryBuilder;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
-    public function register()
+    public function register(): void
     {
         $this->container->singleton(Connection::class, function ($container) {
             $config = $container->get('config')['database'];
@@ -32,7 +32,7 @@ class DatabaseServiceProvider extends ServiceProvider
         });
     }
 
-    public function boot()
+    public function boot(): void
     {
         // Any additional setup after all services are registered
     }
