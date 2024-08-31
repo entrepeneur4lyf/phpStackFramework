@@ -2,30 +2,29 @@
 
 namespace phpStack\Http;
 
-    protected $middlewares = [];
+class MiddlewarePipeline implements RequestHandlerInterface
+{
+    protected array $middleware = [];
 
-    public function pipe(MiddlewareInterface $middleware): self
+    public function add(MiddlewareInterface $middleware): self
     {
-        $this->middlewares[] = $middleware;
+        $this->middleware[] = $middleware;
         return $this;
     }
 
-    public function process(Request $request, callable $handler): Response
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return $this->passToMiddleware($request, 0, $handler);
+        return $this->handle($request);
     }
 
-    protected function passToMiddleware(Request $request, int $index, callable $handler): Response
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        if ($index >= count($this->middlewares)) {
-            return $handler($request);
+        if (empty($this->middleware)) {
+            throw new \RuntimeException('No middleware in the pipeline');
         }
 
-        $middleware = $this->middlewares[$index];
-
-        return $middleware->process($request, function ($request) use ($index, $handler) {
-            return $this->passToMiddleware($request, $index + 1, $handler);
-        });
+        $middleware = array_shift($this->middleware);
+        return $middleware->process($request, $this);
     }
 }
 

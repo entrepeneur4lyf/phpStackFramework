@@ -2,7 +2,7 @@
 
 namespace phpStack\Http;
 
-    public function process(Request $request, callable $next): Response;
+    public function process(Request $request, callable $next): Response
 }
 
 use Psr\Http\Message\ResponseInterface;

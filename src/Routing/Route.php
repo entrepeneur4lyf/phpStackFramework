@@ -2,14 +2,16 @@
 
 namespace phpStack\Routing;
 
-    protected $method;
-    protected $path;
+class Route
+{
+    protected string $method;
+    protected string $uri;
     protected $handler;
 
-    public function __construct(string $method, string $path, $handler)
+    public function __construct(string $method, string $uri, $handler)
     {
         $this->method = $method;
-        $this->path = $path;
+        $this->uri = $uri;
         $this->handler = $handler;
     }
 
@@ -18,9 +20,9 @@ namespace phpStack\Routing;
         return $this->method;
     }
 
-    public function getPath(): string
+    public function getUri(): string
     {
-        return $this->path;
+        return $this->uri;
     }
 
     public function getHandler()

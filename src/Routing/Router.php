@@ -5,34 +5,31 @@ namespace phpStack\Routing;
 use phpStack\Http\Request;
 use phpStack\Http\Response;
 
-    protected $routes = [];
+class Router
+{
+    protected array $routes = [];
 
-    public function addRoute(string $method, string $path, $handler): void
+    public function addRoute(string $method, string $uri, $handler): Route
     {
-        $this->routes[] = [
-            'method' => $method,
-            'path' => $path,
-            'handler' => $handler,
-        ];
+        $route = new Route($method, $uri, $handler);
+        $this->routes[] = $route;
+        return $route;
     }
 
-    public function get(string $path, $handler): void
+    public function get(string $uri, $handler): Route
     {
-        $this->addRoute('GET', $path, $handler);
+        return $this->addRoute('GET', $uri, $handler);
     }
 
-    public function post(string $path, $handler): void
+    public function post(string $uri, $handler): Route
     {
-        $this->addRoute('POST', $path, $handler);
+        return $this->addRoute('POST', $uri, $handler);
     }
 
-    public function match(Request $request): ?array
+    public function match(Request $request): ?Route
     {
-        $method = $request->getMethod();
-        $path = $request->getUri();
-
         foreach ($this->routes as $route) {
-            if ($route['method'] === $method && $this->pathMatches($route['path'], $path)) {
+            if ($this->pathMatches($route->getUri(), $request->getUri()->getPath())) {
                 return $route;
             }
         }
@@ -42,48 +39,17 @@ use phpStack\Http\Response;
 
     protected function pathMatches(string $routePath, string $requestPath): bool
     {
-        $routeSegments = explode('/', trim($routePath, '/'));
-        $requestSegments = explode('/', trim($requestPath, '/'));
-
-        if (count($routeSegments) !== count($requestSegments)) {
-            return false;
-        }
-
-        foreach ($routeSegments as $index => $segment) {
-            if ($segment !== $requestSegments[$index] && !$this->isParameter($segment)) {
-                return false;
-            }
-        }
-
-        return true;
+        // Implementation
     }
 
     protected function isParameter(string $segment): bool
     {
-        return preg_match('/^{.+}$/', $segment) === 1;
+        // Implementation
     }
 
-    public function dispatch(Request $request): Response
+    protected function executeHandler($handler, Request $request): Response
     {
-        $route = $this->match($request);
-
-        if ($route === null) {
-            return new Response('404 Not Found', 404);
-        }
-
-        $handler = $route['handler'];
-
-        if (is_callable($handler)) {
-            return $handler($request);
-        }
-
-        if (is_array($handler) && count($handler) === 2) {
-            [$controller, $method] = $handler;
-            $controllerInstance = new $controller();
-            return $controllerInstance->$method($request);
-        }
-
-        throw new \RuntimeException('Invalid route handler');
+        // Implementation
     }
 }
 
