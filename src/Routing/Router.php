@@ -87,9 +87,7 @@ class Router
 
         throw new \RuntimeException('Invalid route handler');
     }
-}<?php
-
-namespace PhpStack\Routing;
+}
 
 use PhpStack\Http\Request;
 use PhpStack\Http\Response;

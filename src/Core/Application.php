@@ -47,9 +47,6 @@ class Application
 
     // ... other methods ...
 }
-<?php
-
-namespace PhpStack\Core;
 
 use PhpStack\Http\Request;
 use PhpStack\Http\Response;

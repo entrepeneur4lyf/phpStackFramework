@@ -29,9 +29,7 @@ class MiddlewarePipeline
             return $this->passToMiddleware($request, $index + 1, $handler);
         });
     }
-}<?php
-
-namespace PhpStack\Http;
+}
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

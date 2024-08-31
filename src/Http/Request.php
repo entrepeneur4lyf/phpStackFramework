@@ -59,9 +59,7 @@ class Request
     {
         return $this->files;
     }
-}<?php
-
-namespace PhpStack\Http;
+}
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;

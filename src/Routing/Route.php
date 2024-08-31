@@ -29,9 +29,7 @@ class Route
     {
         return $this->handler;
     }
-}<?php
-
-namespace PhpStack\Routing;
+}
 
 class Route
 {

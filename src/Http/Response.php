@@ -51,9 +51,7 @@ class Response
     {
         echo $this->content;
     }
-}<?php
-
-namespace PhpStack\Http;
+}
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;

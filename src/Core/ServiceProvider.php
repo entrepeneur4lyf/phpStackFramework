@@ -17,9 +17,6 @@ abstract class ServiceProvider
     {
     }
 }
-<?php
-
-namespace PhpStack\Core;
 
 abstract class ServiceProvider
 {

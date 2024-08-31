@@ -181,9 +181,6 @@ class Container
                $this->bindings[$abstract]['shared'] === true;
     }
 }
-<?php
-
-namespace PhpStack\Core;
 
 use Psr\Container\ContainerInterface;
 use Exception;

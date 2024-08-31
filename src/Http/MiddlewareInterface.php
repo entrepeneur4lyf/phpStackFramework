@@ -5,9 +5,7 @@ namespace phpStack\Http;
 interface MiddlewareInterface
 {
     public function process(Request $request, callable $next): Response;
-}<?php
-
-namespace PhpStack\Http;
+}
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
