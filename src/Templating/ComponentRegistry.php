@@ -23,8 +23,11 @@ class ComponentRegistry
         $this->container = $container;
     }
 
-    public function register(string $name, string $componentClass): void
+    public function register(string $name, $componentClass): void
     {
+        if (!is_string($componentClass) && !($componentClass instanceof \Closure)) {
+            throw new \InvalidArgumentException('Component class must be a string or a Closure');
+        }
         $this->components[$name] = $componentClass;
     }
 
@@ -35,6 +38,9 @@ class ComponentRegistry
         }
 
         $componentClass = $this->components[$name];
+        if ($componentClass instanceof \Closure) {
+            return $componentClass($this->container, $data);
+        }
         return $this->container->make($componentClass, ['data' => $data]);
     }
 
