@@ -1,24 +1,19 @@
 <?php
 
-namespace phpStack\Providers;
+namespace PhpStack\Providers;
 
-use phpStack\Core\ServiceProvider;
-use phpStack\Database\Connection;
-use phpStack\Database\Migration\MigrationManager;
-use phpStack\Database\QueryBuilder;
+use PhpStack\Core\ServiceProvider;
+use PhpStack\Database\Connection;
+use PhpStack\Database\QueryBuilder;
+use PhpStack\Database\Migration\MigrationManager;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->container->singleton(Connection::class, function ($container) {
-            $config = $container->get('config')['database'];
-            return new Connection(
-                $config['host'],
-                $config['database'],
-                $config['username'],
-                $config['password']
-            );
+            $config = $container->get('config')->get('database', []);
+            return new Connection($config);
         });
 
         $this->container->singleton(QueryBuilder::class, function ($container) {
@@ -27,7 +22,7 @@ class DatabaseServiceProvider extends ServiceProvider
 
         $this->container->singleton(MigrationManager::class, function ($container) {
             $connection = $container->get(Connection::class);
-            $migrationsPath = $container->get('config')['database']['migrations_path'];
+            $migrationsPath = $container->get('config')->get('database.migrations_path');
             return new MigrationManager($connection, $migrationsPath);
         });
     }
