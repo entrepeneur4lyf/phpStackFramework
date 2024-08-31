@@ -6,15 +6,9 @@ use Closure;
 use ReflectionClass;
 use ReflectionParameter;
 use Exception;
+use Psr\Container\ContainerInterface;
 
-namespace phpStack\Core;
-
-use Closure;
-use ReflectionClass;
-use ReflectionParameter;
-use Exception;
-
-class Container implements \Psr\Container\ContainerInterface
+class Container implements ContainerInterface
 {
     /** @var array<string, array{concrete: callable, shared: bool}> */
     protected array $bindings = [];
@@ -189,3 +183,7 @@ class Container implements \Psr\Container\ContainerInterface
     }
 }
 
+    public function has(string $id): bool
+    {
+        return isset($this->bindings[$id]) || isset($this->instances[$id]);
+    }

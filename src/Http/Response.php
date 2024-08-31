@@ -28,73 +28,86 @@ class Response implements ResponseInterface
         // Set headers, output body, etc.
     }
 
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
-        // Implement method
+        return $this->protocolVersion;
     }
 
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->protocolVersion = $version;
+        return $new;
     }
 
-    public function getHeaders()
+    public function getHeaders(): array
     {
-        // Implement method
+        return $this->headers;
     }
 
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
-        // Implement method
+        return isset($this->headers[strtolower($name)]);
     }
 
-    public function getHeader($name)
+    public function getHeader($name): array
     {
-        // Implement method
+        return $this->headers[strtolower($name)] ?? [];
     }
 
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
-        // Implement method
+        return implode(', ', $this->getHeader($name));
     }
 
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->headers[strtolower($name)] = (array) $value;
+        return $new;
     }
 
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->headers[strtolower($name)][] = $value;
+        return $new;
     }
 
-    public function withoutHeader($name)
+    public function withoutHeader($name): static
     {
-        // Implement method
+        $new = clone $this;
+        unset($new->headers[strtolower($name)]);
+        return $new;
     }
 
-    public function getBody()
+    public function getBody(): StreamInterface
     {
-        // Implement method
+        return $this->body;
     }
 
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->body = $body;
+        return $new;
     }
 
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
-        // Implement method
+        return $this->statusCode;
     }
 
-    public function withStatus($code, $reasonPhrase = '')
+    public function withStatus($code, $reasonPhrase = ''): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->statusCode = $code;
+        $new->reasonPhrase = $reasonPhrase;
+        return $new;
     }
 
-    public function getReasonPhrase()
+    public function getReasonPhrase(): string
     {
-        // Implement method
+        return $this->reasonPhrase;
     }
 }

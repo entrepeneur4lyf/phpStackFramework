@@ -3,7 +3,7 @@
 namespace phpStack\Core;
 
 use phpStack\Core\Container;
-use phpStack\Providers\DatabaseServiceProvider;
+use PhpStack\Providers\DatabaseServiceProvider;
 use phpStack\Providers\TemplatingServiceProvider;
 use phpStack\Http\Request;
 use phpStack\Http\Response;
@@ -19,9 +19,9 @@ class Application
     protected MiddlewarePipeline $middlewarePipeline;
     protected Config $config;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(?ContainerInterface $container = null)
     {
-        $this->container = $container;
+        $this->container = $container ?? new Container();
         $this->router = $container->get(Router::class);
         $this->middlewarePipeline = $container->get(MiddlewarePipeline::class);
         $this->config = $container->get(Config::class);
@@ -92,7 +92,7 @@ class Application
             });
         } catch (\Throwable $e) {
             // Handle any uncaught exceptions
-            return new Response('An error occurred', 500);
+            return (new Response())->withStatus(500)->withBody(stream_for('An error occurred'));
         }
     }
 

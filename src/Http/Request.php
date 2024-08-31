@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-class Request implements ServerRequestInterface
+class Request implements ServerRequestInterface, RequestInterface
 {
     public string $method;
     public UriInterface $uri;
@@ -33,109 +33,129 @@ class Request implements ServerRequestInterface
         return new self();
     }
 
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
-        // Implement method
+        return $this->protocol;
     }
 
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->protocol = $version;
+        return $new;
     }
 
-    public function getHeaders()
+    public function getHeaders(): array
     {
-        // Implement method
+        return $this->headers;
     }
 
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
-        // Implement method
+        return isset($this->headers[strtolower($name)]);
     }
 
-    public function getHeader($name)
+    public function getHeader($name): array
     {
-        // Implement method
+        return $this->headers[strtolower($name)] ?? [];
     }
 
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
-        // Implement method
+        return implode(', ', $this->getHeader($name));
     }
 
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->headers[strtolower($name)] = (array) $value;
+        return $new;
     }
 
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->headers[strtolower($name)][] = $value;
+        return $new;
     }
 
-    public function withoutHeader($name)
+    public function withoutHeader($name): static
     {
-        // Implement method
+        $new = clone $this;
+        unset($new->headers[strtolower($name)]);
+        return $new;
     }
 
-    public function getBody()
+    public function getBody(): StreamInterface
     {
-        // Implement method
+        return $this->body;
     }
 
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->body = $body;
+        return $new;
     }
 
-    public function getRequestTarget()
+    public function getRequestTarget(): string
     {
-        // Implement method
+        return $this->requestTarget ?? $this->uri->getPath();
     }
 
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget($requestTarget): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->requestTarget = $requestTarget;
+        return $new;
     }
 
-    public function withMethod($method)
+    public function withMethod($method): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->method = $method;
+        return $new;
     }
 
-    public function getServerParams()
+    public function getServerParams(): array
     {
-        // Implement method
+        return $this->serverParams;
     }
 
-    public function getCookieParams()
+    public function getCookieParams(): array
     {
-        // Implement method
+        return $this->cookieParams;
     }
 
-    public function withCookieParams(array $cookies)
+    public function withCookieParams(array $cookies): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->cookieParams = $cookies;
+        return $new;
     }
 
-    public function getQueryParams()
+    public function getQueryParams(): array
     {
-        // Implement method
+        return $this->queryParams;
     }
 
-    public function withQueryParams(array $query)
+    public function withQueryParams(array $query): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->queryParams = $query;
+        return $new;
     }
 
-    public function getUploadedFiles()
+    public function getUploadedFiles(): array
     {
-        // Implement method
+        return $this->uploadedFiles;
     }
 
-    public function withUploadedFiles(array $uploadedFiles)
+    public function withUploadedFiles(array $uploadedFiles): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->uploadedFiles = $uploadedFiles;
+        return $new;
     }
 
     public function getParsedBody()
@@ -143,14 +163,16 @@ class Request implements ServerRequestInterface
         // Implement method
     }
 
-    public function withParsedBody($data)
+    public function withParsedBody($data): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->parsedBody = $data;
+        return $new;
     }
 
-    public function getAttributes()
+    public function getAttributes(): array
     {
-        // Implement method
+        return $this->attributes;
     }
 
     public function getAttribute($name, $default = null)
@@ -158,13 +180,28 @@ class Request implements ServerRequestInterface
         // Implement method
     }
 
-    public function withAttribute($name, $value)
+    public function withAttribute($name, $value): static
     {
-        // Implement method
+        $new = clone $this;
+        $new->attributes[$name] = $value;
+        return $new;
     }
 
-    public function withoutAttribute($name)
+    public function withoutAttribute($name): static
     {
-        // Implement method
+        $new = clone $this;
+        unset($new->attributes[$name]);
+        return $new;
     }
 }
+    public function withUri(UriInterface $uri, $preserveHost = false): static
+    {
+        $new = clone $this;
+        $new->uri = $uri;
+
+        if (!$preserveHost || !$this->hasHeader('Host')) {
+            $new = $new->withHeader('Host', $uri->getHost());
+        }
+
+        return $new;
+    }
