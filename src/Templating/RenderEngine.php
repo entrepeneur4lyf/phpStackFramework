@@ -51,8 +51,15 @@ class RenderEngine
         }
 
         // Render the content first if it's a ComponentService
-        if (isset($data['content']) && $data['content'] instanceof ComponentService) {
-            $data['content'] = $data['content']->render();
+        if (isset($data['content'])) {
+            if ($data['content'] instanceof ComponentService) {
+                $data['content'] = $data['content']->render();
+            } elseif (is_string($data['content'])) {
+                // If it's already a string, we don't need to do anything
+            } else {
+                // If it's neither a ComponentService nor a string, render it as an empty string
+                $data['content'] = '';
+            }
         }
 
         $renderedContent = $this->layoutManager->render($layoutName, $data);

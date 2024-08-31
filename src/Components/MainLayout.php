@@ -41,7 +41,6 @@ class MainLayout extends ComponentService
                 <main>
                     {$mainContent}
                 </main>
-                <div id="dynamic-content"></div>
             </div>
             {$this->componentRegistry->render('footer')}
             <div id="dynamic-content"></div>
