@@ -10,7 +10,7 @@ use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 
-$app = new Application();
+$app = Application::getInstance();
 
 // Handle HTTP requests
 $request = $_SERVER['REQUEST_URI'];

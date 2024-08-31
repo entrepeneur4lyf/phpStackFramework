@@ -18,4 +18,16 @@ class AboutPage extends ComponentService
         </div>
         HTML;
     }
+}<?php
+
+namespace phpStack\Components;
+
+use phpStack\Templating\ComponentService;
+
+class AboutPage extends ComponentService
+{
+    public function render(): string
+    {
+        return '<h2>About phpStack Framework</h2><p>This is a powerful and flexible PHP framework.</p>';
+    }
 }
