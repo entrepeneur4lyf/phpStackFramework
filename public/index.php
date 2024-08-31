@@ -99,13 +99,13 @@ if (php_sapi_name() === 'cli-server') {
                 case '/home':
                     $content = $renderEngine->renderLayout('main-layout', [
                         'title' => 'Home',
-                        'content' => $renderEngine->resolve('home-page')
+                        'content' => $renderEngine->render('home-page')
                     ]);
                     break;
                 case '/about':
                     $content = $renderEngine->renderLayout('main-layout', [
                         'title' => 'About',
-                        'content' => $renderEngine->resolve('about-page')
+                        'content' => $renderEngine->render('about-page')
                     ]);
                     break;
                 default:

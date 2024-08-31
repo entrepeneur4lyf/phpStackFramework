@@ -21,7 +21,7 @@ class MainLayout extends ComponentService
         } elseif ($content instanceof ComponentService) {
             $mainContent = $content->render();
         } else {
-            $mainContent = '';
+            $mainContent = '<p>No content available.</p>';
         }
 
         return <<<HTML
