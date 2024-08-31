@@ -181,3 +181,97 @@ class Container
                $this->bindings[$abstract]['shared'] === true;
     }
 }
+<?php
+
+namespace PhpStack\Core;
+
+use Psr\Container\ContainerInterface;
+use Exception;
+
+class Container implements ContainerInterface
+{
+    protected array $bindings = [];
+    protected array $instances = [];
+
+    public function get(string $id)
+    {
+        if ($this->has($id)) {
+            if (isset($this->instances[$id])) {
+                return $this->instances[$id];
+            }
+
+            $concrete = $this->bindings[$id];
+            return $this->instances[$id] = $this->resolve($concrete);
+        }
+
+        throw new Exception("No binding found for $id");
+    }
+
+    public function has(string $id): bool
+    {
+        return isset($this->bindings[$id]) || isset($this->instances[$id]);
+    }
+
+    public function bind(string $abstract, $concrete = null, bool $shared = false): void
+    {
+        if (is_null($concrete)) {
+            $concrete = $abstract;
+        }
+
+        $this->bindings[$abstract] = compact('concrete', 'shared');
+    }
+
+    public function singleton(string $abstract, $concrete = null): void
+    {
+        $this->bind($abstract, $concrete, true);
+    }
+
+    protected function resolve($concrete)
+    {
+        if ($concrete instanceof \Closure) {
+            return $concrete($this);
+        }
+
+        if (is_string($concrete)) {
+            return $this->build($concrete);
+        }
+
+        return $concrete;
+    }
+
+    protected function build(string $concrete)
+    {
+        $reflector = new \ReflectionClass($concrete);
+
+        if (!$reflector->isInstantiable()) {
+            throw new Exception("Class $concrete is not instantiable");
+        }
+
+        $constructor = $reflector->getConstructor();
+
+        if (is_null($constructor)) {
+            return new $concrete;
+        }
+
+        $dependencies = $constructor->getParameters();
+        $instances = $this->resolveDependencies($dependencies);
+
+        return $reflector->newInstanceArgs($instances);
+    }
+
+    protected function resolveDependencies(array $dependencies)
+    {
+        $results = [];
+
+        foreach ($dependencies as $dependency) {
+            $type = $dependency->getType();
+            if (!$type || $type->isBuiltin()) {
+                throw new Exception("Unresolvable dependency: {$dependency->name}");
+            }
+
+            $results[] = $this->get($type->getName());
+        }
+
+        return $results;
+    }
+}

@@ -87,4 +87,65 @@ class Router
 
         throw new \RuntimeException('Invalid route handler');
     }
+}<?php
+
+namespace PhpStack\Routing;
+
+use PhpStack\Http\Request;
+use PhpStack\Http\Response;
+use Exception;
+
+class Router
+{
+    protected array $routes = [];
+
+    public function addRoute(string $method, string $uri, $handler): Route
+    {
+        $route = new Route($method, $uri, $handler);
+        $this->routes[$method][$uri] = $route;
+        return $route;
+    }
+
+    public function get(string $uri, $handler): Route
+    {
+        return $this->addRoute('GET', $uri, $handler);
+    }
+
+    public function post(string $uri, $handler): Route
+    {
+        return $this->addRoute('POST', $uri, $handler);
+    }
+
+    // Add other HTTP methods as needed
+
+    public function dispatch(Request $request): Response
+    {
+        $method = $request->getMethod();
+        $uri = $request->getUri()->getPath();
+
+        if (isset($this->routes[$method][$uri])) {
+            $route = $this->routes[$method][$uri];
+            return $this->executeHandler($route->getHandler(), $request);
+        }
+
+        throw new Exception('Route not found', 404);
+    }
+
+    protected function executeHandler($handler, Request $request): Response
+    {
+        if (is_callable($handler)) {
+            $response = call_user_func($handler, $request);
+        } elseif (is_array($handler) && count($handler) === 2) {
+            [$controller, $method] = $handler;
+            $response = call_user_func([new $controller, $method], $request);
+        } else {
+            throw new Exception('Invalid route handler');
+        }
+
+        if (!$response instanceof Response) {
+            $response = new Response($response);
+        }
+
+        return $response;
+    }
 }

@@ -47,3 +47,81 @@ class Application
 
     // ... other methods ...
 }
+<?php
+
+namespace PhpStack\Core;
+
+use PhpStack\Http\Request;
+use PhpStack\Http\Response;
+use PhpStack\Routing\Router;
+use PhpStack\Http\MiddlewarePipeline;
+use Psr\Container\ContainerInterface;
+
+class Application
+{
+    protected ContainerInterface $container;
+    protected Router $router;
+    protected MiddlewarePipeline $middlewarePipeline;
+    protected Config $config;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+        $this->router = $container->get(Router::class);
+        $this->middlewarePipeline = $container->get(MiddlewarePipeline::class);
+        $this->config = $container->get(Config::class);
+    }
+
+    public function bootstrap(): void
+    {
+        // Load configuration
+        $this->loadConfiguration();
+        // Register service providers
+        $this->registerServiceProviders();
+        // Set up error handling
+        $this->setupErrorHandling();
+    }
+
+    protected function loadConfiguration(): void
+    {
+        $configPath = $this->container->get('config_path');
+        $this->config->load($configPath);
+    }
+
+    protected function registerServiceProviders(): void
+    {
+        $providers = $this->config->get('app.providers', []);
+        foreach ($providers as $providerClass) {
+            $provider = new $providerClass($this->container);
+            $provider->register();
+            $provider->boot();
+        }
+    }
+
+    protected function setupErrorHandling(): void
+    {
+        // Implement error handling setup
+    }
+
+    public function handle(Request $request): Response
+    {
+        $this->bootstrap();
+
+        return $this->middlewarePipeline->process($request, function ($request) {
+            return $this->router->dispatch($request);
+        });
+    }
+
+    public function terminate(Request $request, Response $response): void
+    {
+        // Perform any cleanup or logging tasks
+    }
+
+    public function run(): void
+    {
+        $request = Request::createFromGlobals();
+        $response = $this->handle($request);
+        $response->send();
+        $this->terminate($request, $response);
+    }
+}
