@@ -89,8 +89,8 @@ class Router
     }
 }
 
-use PhpStack\Http\Request;
-use PhpStack\Http\Response;
+use PhpStack\Http\Request as HttpRequest;
+use PhpStack\Http\Response as HttpResponse;
 use Exception;
 
 class Router
