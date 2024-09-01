@@ -2,35 +2,25 @@
 
 namespace phpStack\Database;
 
-class Relation
+abstract class Relation
 {
-    protected $query;
-    protected $parent;
-    protected $related;
-    protected $foreignKey;
-    protected $localKey;
-    protected $type;
+    protected Model $parent;
+    protected string $relatedClass;
+    protected string $foreignKey;
+    protected string $localKey;
 
-    public function __construct($query, $parent, $related, $foreignKey, $localKey, $type)
+    public function __construct(Model $parent, string $relatedClass, string $foreignKey, string $localKey)
     {
-        $this->query = $query;
         $this->parent = $parent;
-        $this->related = $related;
+        $this->relatedClass = $relatedClass;
         $this->foreignKey = $foreignKey;
         $this->localKey = $localKey;
-        $this->type = $type;
     }
 
-    public function getResults()
+    abstract public function getResults();
+
+    protected function getRelatedQuery(): QueryBuilder
     {
-        $results = $this->query->get();
-
-        if ($this->type === 'hasOne') {
-            return !empty($results) ? new $this->related($results[0]) : null;
-        }
-
-        return array_map(function ($result) {
-            return new $this->related($result);
-        }, $results);
+        return $this->relatedClass::query();
     }
 }

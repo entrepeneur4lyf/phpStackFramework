@@ -3,107 +3,115 @@
 namespace phpStack\Database\Migration;
 
 use phpStack\Database\Connection;
-use phpStack\Database\QueryBuilder;
 
 class MigrationManager
 {
-    protected $connection;
-    protected $migrationsPath;
-    protected $migrationsTable = 'migrations';
+    protected Connection $connection;
+    protected string $migrationPath;
+    protected string $migrationTable = 'migrations';
 
-    public function __construct(Connection $connection, $migrationsPath)
+    public function __construct(Connection $connection, string $migrationPath)
     {
         $this->connection = $connection;
-        $this->migrationsPath = $migrationsPath;
-        $this->ensureMigrationsTableExists();
+        $this->migrationPath = $migrationPath;
+        $this->createMigrationTableIfNotExists();
     }
 
-    protected function ensureMigrationsTableExists()
+    public function migrate(): void
     {
-        $query = "CREATE TABLE IF NOT EXISTS {$this->migrationsTable} (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            migration VARCHAR(255),
-            batch INT
-        )";
-        $this->connection->query($query);
-    }
+        $migrations = $this->getPendingMigrations();
 
-    public function getMigrationsFiles()
-    {
-        return glob($this->migrationsPath . '/*.php');
-    }
-
-    public function getRunMigrations()
-    {
-        return $this->connection->table($this->migrationsTable)->pluck('migration');
-    }
-
-    public function runMigrations()
-    {
-        $files = $this->getMigrationsFiles();
-        $ranMigrations = $this->getRunMigrations();
-        $batch = $this->getNextBatchNumber();
-
-        foreach ($files as $file) {
-            $migrationName = basename($file, '.php');
-            if (!in_array($migrationName, $ranMigrations)) {
-                $this->runMigration($file, $migrationName, $batch);
-            }
+        foreach ($migrations as $migration) {
+            $this->runMigration($migration);
         }
     }
 
-    protected function runMigration($file, $migrationName, $batch)
+    public function rollback(int $steps = 1): void
     {
-        require_once $file;
-        $className = 'Migration_' . $migrationName;
-        $migration = new $className($this->connection);
-        $migration->up();
-
-        $this->connection->table($this->migrationsTable)->insert([
-            'migration' => $migrationName,
-            'batch' => $batch
-        ]);
-
-        echo "Migrated: $migrationName\n";
-    }
-
-    public function rollback()
-    {
-        $lastBatch = $this->getLastBatchNumber();
-        $migrations = $this->connection->table($this->migrationsTable)
-            ->where('batch', $lastBatch)
-            ->get();
+        $migrations = $this->getLastMigrations($steps);
 
         foreach ($migrations as $migration) {
             $this->rollbackMigration($migration);
         }
     }
 
-    protected function rollbackMigration($migration)
+    protected function getPendingMigrations(): array
     {
-        $file = $this->migrationsPath . '/' . $migration['migration'] . '.php';
-        require_once $file;
-        $className = 'Migration_' . $migration['migration'];
-        $instance = new $className($this->connection);
+        $files = $this->getMigrationFiles();
+        $ran = $this->getRanMigrations();
+
+        return array_diff($files, $ran);
+    }
+
+    protected function getLastMigrations(int $steps): array
+    {
+        $query = $this->connection->query(
+            "SELECT migration FROM {$this->migrationTable} ORDER BY id DESC LIMIT ?",
+            [$steps]
+        );
+
+        return array_column($query->fetchAll(\PDO::FETCH_ASSOC), 'migration');
+    }
+
+    protected function getMigrationFiles(): array
+    {
+        $files = glob($this->migrationPath . '/*.php');
+        return array_map('basename', $files);
+    }
+
+    protected function getRanMigrations(): array
+    {
+        $query = $this->connection->query("SELECT migration FROM {$this->migrationTable}");
+        return array_column($query->fetchAll(\PDO::FETCH_ASSOC), 'migration');
+    }
+
+    protected function runMigration(string $migration): void
+    {
+        require_once $this->migrationPath . '/' . $migration;
+
+        $class = $this->getMigrationClass($migration);
+        $instance = new $class($this->connection);
+
+        $instance->up();
+
+        $this->connection->query(
+            "INSERT INTO {$this->migrationTable} (migration) VALUES (?)",
+            [$migration]
+        );
+
+        echo "Migrated: {$migration}\n";
+    }
+
+    protected function rollbackMigration(string $migration): void
+    {
+        require_once $this->migrationPath . '/' . $migration;
+
+        $class = $this->getMigrationClass($migration);
+        $instance = new $class($this->connection);
+
         $instance->down();
 
-        $this->connection->table($this->migrationsTable)
-            ->where('migration', $migration['migration'])
-            ->delete();
+        $this->connection->query(
+            "DELETE FROM {$this->migrationTable} WHERE migration = ?",
+            [$migration]
+        );
 
-        echo "Rolled back: {$migration['migration']}\n";
+        echo "Rolled back: {$migration}\n";
     }
 
-    protected function getNextBatchNumber()
+    protected function getMigrationClass(string $migration): string
     {
-        $lastBatch = $this->getLastBatchNumber();
-        return $lastBatch + 1;
+        return 'Migration_' . pathinfo($migration, PATHINFO_FILENAME);
     }
 
-    protected function getLastBatchNumber()
+    protected function createMigrationTableIfNotExists(): void
     {
-        $lastBatch = $this->connection->table($this->migrationsTable)
-            ->max('batch');
-        return $lastBatch ?: 0;
+        $this->connection->query("
+            CREATE TABLE IF NOT EXISTS {$this->migrationTable} (
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                migration VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ");
     }
 }

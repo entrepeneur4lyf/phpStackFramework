@@ -4,34 +4,45 @@ namespace phpStack\Database;
 
 use PDO;
 use PDOException;
+use phpStack\Core\Config;
 
 class Connection
 {
     protected PDO $pdo;
+    protected Config $config;
 
-    public function __construct(array $config)
+    public function __construct(Config $config)
     {
-        $dsn = $this->createDsn($config);
-        $username = $config['username'] ?? null;
-        $password = $config['password'] ?? null;
-        $options = $config['options'] ?? [];
+        $this->config = $config;
+        $this->connect();
+    }
+
+    protected function connect(): void
+    {
+        $driver = $this->config->get('database.default');
+        $config = $this->config->get("database.connections.{$driver}");
 
         try {
-            $this->pdo = new PDO($dsn, $username, $password, $options);
+            $this->pdo = new PDO(
+                $this->getDsn($driver, $config),
+                $config['username'],
+                $config['password'],
+                $config['options'] ?? []
+            );
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            throw new \RuntimeException("Database connection failed: " . $e->getMessage());
+            throw new PDOException("Failed to connect to database: " . $e->getMessage());
         }
     }
 
-    protected function createDsn(array $config): string
+    protected function getDsn(string $driver, array $config): string
     {
-        $driver = $config['driver'] ?? 'mysql';
-        $host = $config['host'] ?? 'localhost';
-        $port = $config['port'] ?? '3306';
-        $database = $config['database'] ?? '';
-
-        return "{$driver}:host={$host};port={$port};dbname={$database}";
+        return match ($driver) {
+            'mysql' => "mysql:host={$config['host']};port={$config['port']};dbname={$config['database']};charset={$config['charset']}",
+            'pgsql' => "pgsql:host={$config['host']};port={$config['port']};dbname={$config['database']}",
+            'sqlite' => "sqlite:{$config['database']}",
+            default => throw new PDOException("Unsupported database driver: {$driver}")
+        };
     }
 
     public function getPdo(): PDO
@@ -46,23 +57,21 @@ class Connection
         return $statement;
     }
 
+    public function transaction(callable $callback): mixed
+    {
+        $this->pdo->beginTransaction();
+        try {
+            $result = $callback($this);
+            $this->pdo->commit();
+            return $result;
+        } catch (\Exception $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
+    }
+
     public function lastInsertId(): string
     {
         return $this->pdo->lastInsertId();
-    }
-
-    public function beginTransaction(): bool
-    {
-        return $this->pdo->beginTransaction();
-    }
-
-    public function commit(): bool
-    {
-        return $this->pdo->commit();
-    }
-
-    public function rollBack(): bool
-    {
-        return $this->pdo->rollBack();
     }
 }

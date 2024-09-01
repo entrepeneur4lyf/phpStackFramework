@@ -4,6 +4,8 @@
 ├── SUMMARY.md
 ├── composer.json
 ├── composer.lock
+├── config
+│   └── database.php
 ├── design
 │   ├── advanced-caching-system.md
 │   ├── advanced-component-templating-system.md
@@ -28,10 +30,15 @@
 │   ├── server-side-rendering-guide.md
 │   ├── state-management-guide.md
 │   └── websocket-auth-guide.md
+├── frankenphp
+├── htmx.md
+├── phpunit.xml
 ├── public
+│   ├── css
+│   │   └── main.css
+│   ├── favicon.ico
 │   ├── index.php
 │   └── js
-│       └── websocket-handler.js
 ├── roadmap.md
 ├── serve.sh
 ├── src
@@ -54,7 +61,9 @@
 │   │   ├── Application.php
 │   │   ├── Cache
 │   │   │   └── CacheManager.php
+│   │   ├── Config.php
 │   │   ├── Container.php
+│   │   ├── Module.php
 │   │   ├── ServiceProvider.php
 │   │   └── helpers.php
 │   ├── Database
@@ -103,6 +112,8 @@
 │   ├── Integration
 │   ├── Performance
 │   └── Unit
+│       └── Core
+│           └── ContainerTest.php
 └── vendor
     ├── autoload.php
     ├── bin
@@ -1061,56 +1072,126 @@
     │               ├── Token.php
     │               └── compatibility_tokens.php
     ├── openswoole
-    │   └── core
+    │   ├── core
+    │   │   ├── README.md
+    │   │   ├── composer.json
+    │   │   ├── composer.lock
+    │   │   ├── phpunit.xml.dist
+    │   │   ├── src
+    │   │   │   ├── Coroutine
+    │   │   │   │   ├── Client
+    │   │   │   │   │   ├── ClientConfigInterface.php
+    │   │   │   │   │   ├── ClientFactoryInterface.php
+    │   │   │   │   │   ├── ClientProxy.php
+    │   │   │   │   │   ├── MysqliClient.php
+    │   │   │   │   │   ├── MysqliClientFactory.php
+    │   │   │   │   │   ├── MysqliConfig.php
+    │   │   │   │   │   ├── MysqliException.php
+    │   │   │   │   │   ├── MysqliStatementProxy.php
+    │   │   │   │   │   ├── PDOClient.php
+    │   │   │   │   │   ├── PDOClientFactory.php
+    │   │   │   │   │   ├── PDOConfig.php
+    │   │   │   │   │   ├── PDOStatementProxy.php
+    │   │   │   │   │   ├── PostgresClientFactory.php
+    │   │   │   │   │   ├── PostgresConfig.php
+    │   │   │   │   │   ├── RedisClientFactory.php
+    │   │   │   │   │   └── RedisConfig.php
+    │   │   │   │   ├── Pool
+    │   │   │   │   │   └── ClientPool.php
+    │   │   │   │   ├── WaitGroup.php
+    │   │   │   │   └── functions.php
+    │   │   │   ├── Helper.php
+    │   │   │   ├── Process
+    │   │   │   │   └── Manager.php
+    │   │   │   └── Psr
+    │   │   │       ├── Message.php
+    │   │   │       ├── Middleware
+    │   │   │       │   └── StackHandler.php
+    │   │   │       ├── Request.php
+    │   │   │       ├── Response.php
+    │   │   │       ├── ServerRequest.php
+    │   │   │       ├── Stream.php
+    │   │   │       ├── UploadedFile.php
+    │   │   │       └── Uri.php
+    │   │   └── tests
+    │   │       ├── Psr
+    │   │       │   ├── RequestTest.php
+    │   │       │   ├── ResponseTest.php
+    │   │       │   ├── ServerRequestTest.php
+    │   │       │   ├── StreamTest.php
+    │   │       │   ├── UploadedFileTest.php
+    │   │       │   └── UriTest.php
+    │   │       └── bootstrap.php
+    │   └── ide-helper
+    │       ├── LICENSE
     │       ├── README.md
     │       ├── composer.json
-    │       ├── composer.lock
-    │       ├── phpunit.xml.dist
-    │       ├── src
-    │       │   ├── Coroutine
-    │       │   │   ├── Client
-    │       │   │   │   ├── ClientConfigInterface.php
-    │       │   │   │   ├── ClientFactoryInterface.php
-    │       │   │   │   ├── ClientProxy.php
-    │       │   │   │   ├── MysqliClient.php
-    │       │   │   │   ├── MysqliClientFactory.php
-    │       │   │   │   ├── MysqliConfig.php
-    │       │   │   │   ├── MysqliException.php
-    │       │   │   │   ├── MysqliStatementProxy.php
-    │       │   │   │   ├── PDOClient.php
-    │       │   │   │   ├── PDOClientFactory.php
-    │       │   │   │   ├── PDOConfig.php
-    │       │   │   │   ├── PDOStatementProxy.php
-    │       │   │   │   ├── PostgresClientFactory.php
-    │       │   │   │   ├── PostgresConfig.php
-    │       │   │   │   ├── RedisClientFactory.php
-    │       │   │   │   └── RedisConfig.php
-    │       │   │   ├── Pool
-    │       │   │   │   └── ClientPool.php
-    │       │   │   ├── WaitGroup.php
-    │       │   │   └── functions.php
-    │       │   ├── Helper.php
-    │       │   ├── Process
-    │       │   │   └── Manager.php
-    │       │   └── Psr
-    │       │       ├── Message.php
-    │       │       ├── Middleware
-    │       │       │   └── StackHandler.php
-    │       │       ├── Request.php
-    │       │       ├── Response.php
-    │       │       ├── ServerRequest.php
-    │       │       ├── Stream.php
-    │       │       ├── UploadedFile.php
-    │       │       └── Uri.php
-    │       └── tests
-    │           ├── Psr
-    │           │   ├── RequestTest.php
-    │           │   ├── ResponseTest.php
-    │           │   ├── ServerRequestTest.php
-    │           │   ├── StreamTest.php
-    │           │   ├── UploadedFileTest.php
-    │           │   └── UriTest.php
-    │           └── bootstrap.php
+    │       └── src
+    │           └── OpenSwoole
+    │               ├── Atomic
+    │               │   └── Long.php
+    │               ├── Atomic.php
+    │               ├── Client
+    │               │   └── Exception.php
+    │               ├── Client.php
+    │               ├── Connection
+    │               │   └── Iterator.php
+    │               ├── Constant.php
+    │               ├── Coroutine
+    │               │   ├── Channel.php
+    │               │   ├── Client.php
+    │               │   ├── Context.php
+    │               │   ├── Http
+    │               │   │   ├── Client
+    │               │   │   │   └── Exception.php
+    │               │   │   ├── Client.php
+    │               │   │   └── Server.php
+    │               │   ├── Http2
+    │               │   │   ├── Client
+    │               │   │   │   └── Exception.php
+    │               │   │   └── Client.php
+    │               │   ├── Iterator.php
+    │               │   ├── PostgreSQL.php
+    │               │   ├── Scheduler.php
+    │               │   ├── Socket
+    │               │   │   └── Exception.php
+    │               │   ├── Socket.php
+    │               │   └── System.php
+    │               ├── Coroutine.php
+    │               ├── Error.php
+    │               ├── Event.php
+    │               ├── Exception.php
+    │               ├── ExitException.php
+    │               ├── Http
+    │               │   ├── Request.php
+    │               │   ├── Response.php
+    │               │   └── Server.php
+    │               ├── Http2
+    │               │   ├── Request.php
+    │               │   └── Response.php
+    │               ├── Lock.php
+    │               ├── Process
+    │               │   └── Pool.php
+    │               ├── Process.php
+    │               ├── Runtime.php
+    │               ├── Server
+    │               │   ├── Event.php
+    │               │   ├── Packet.php
+    │               │   ├── PipeMessage.php
+    │               │   ├── Port.php
+    │               │   ├── StatusInfo.php
+    │               │   ├── Task.php
+    │               │   └── TaskResult.php
+    │               ├── Server.php
+    │               ├── Table.php
+    │               ├── Timer
+    │               │   └── Iterator.php
+    │               ├── Timer.php
+    │               ├── Util.php
+    │               └── WebSocket
+    │                   ├── CloseFrame.php
+    │                   ├── Frame.php
+    │                   └── Server.php
     ├── phar-io
     │   ├── manifest
     │   │   ├── CHANGELOG.md
@@ -3459,4 +3540,4 @@
                 ├── Tokenizer.php
                 └── XMLSerializer.php
 
-455 directories, 3004 files
+476 directories, 3064 files
