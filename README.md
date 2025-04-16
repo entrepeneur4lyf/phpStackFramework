@@ -1,3 +1,5 @@
+# THIS IS A NON-FUNCTIONAL WIP - BUT THERE MIGHT BE SOME CODE TO LEARN FROM :)
+
 # PHP Stack Framework
 
 A comprehensive, scalable, and feature-rich PHP framework designed for modern web application development. This framework focuses on performance, scalability, and developer experience, incorporating advanced features like real-time updates, AI integration, distributed computing, and event-driven architecture.
